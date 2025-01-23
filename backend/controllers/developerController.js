@@ -5,7 +5,7 @@ export const registerDeveloper = async (req, res) => {
   const { name, email, password, skills, portfolio } = req.body;
 
   try {
-    const isExcistinguser = await User.findOne({ email: email });
+    const isExcistinguser = await Developer.findOne({ email: email });
 
     if (isExcistinguser) {
       return res
