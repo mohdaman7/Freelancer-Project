@@ -1,5 +1,5 @@
 
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const developerSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -15,4 +15,5 @@ const developerSchema = new mongoose.Schema({
     status: { type: Boolean, default: true },
 })
 
-module.exports = mongoose.model("Developer",developerSchema)
+const Developer = mongoose.model("Developer",developerSchema)
+export default Developer
