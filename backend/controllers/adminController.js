@@ -62,7 +62,7 @@ export const blockDeveloperById = async (req, res) => {
   }
 };
 
-export const updatedDeveloper = async (req,res) => {
+export const updateDeveloper = async (req,res) => {
   try{
     const {id} = req.params;
     const updates = req.body;
@@ -105,6 +105,21 @@ export const viewAllClients = async (req, res) => {
     res.status(500).json({ message: "Error fetching clients", error });
   }
 };
+
+
+export const viewClientById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const client = await Client.findById(id);
+    if (!client) {
+      return res.status(404).json({ message: "Client not found" });
+    }
+    res.status(200).json({ message: "Client fetched successfully", client });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching client", error });
+  }
+};
+
 
 export const blockClientById = async (req,res) => {
   try {
