@@ -9,7 +9,7 @@ import jwt from "jsonwebtoken";
 export const loginAdmin = async (req, res) => {
     const { email, password } = req.body;
 
-    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD){
 
       const token = jwt.sign({ email }, process.env.ADMIN_SECRET_KEY);
       res.cookie("token", token, { httpOnly: true });
@@ -35,18 +35,115 @@ export const viewAllDevelopers = async (req, res) => {
     }
 };
 
-export const viewAllClients = async (req, res) => {
-    try {
 
-      const clients = await Client.find();
-      if(clients.length===0){
-        return res.status(404).json({message:'No users in database'})
-      }
-      res.status(200).json({ message: "Clients fetched successfully", clients });
-    
-    } catch (error) {
-      res.status(500).json({ message: "Error fetching clients", error });
+export const viewDeveloperById = async (req,res) => {
+  try {
+    const {id} = req.params;
+    const developer = await Developer.findById(id);
+    if(!developer) {
+      return res.status(404).json({ message: "Developer not found"});
     }
+    res.status(200).json({ message: "Developer fetched successfully", developer})
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching developer",error})
+  }
+};
+
+export const blockDeveloperById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const developer = await Developer.findByIdAndUpdate(id, { status: false }, { new: true });
+    if (!developer) {
+      return res.status(404).json({ message: "Developer not found" });
+    }
+    res.status(200).json({ message: "Developer blocked successfully", developer });
+  } catch (error) {
+    res.status(500).json({ message: "Error blocking developer", error });
+  }
+};
+
+export const updatedDeveloper = async (req,res) => {
+  try{
+    const {id} = req.params;
+    const updates = req.body;
+    const updatedDeveloper = await Developer.findByIdAndUpdate(id,updates,{new:true});
+    if(!updatedDeveloper){
+      return res.status(404).json({ message: "Developer not found"});
+    }
+    res.status(200).json({ message: "Developer updated successfully", updatedDeveloper});
+  } catch (error) {
+    res.status(500).json({ message: "Error updating developer", error});
+  }
+}
+
+export const deleteDeveloper = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const developer = await Developer.findByIdAndDelete(id);
+    if (!developer) {
+      return res.status(404).json({ message: "Developer not found" });
+    }
+    res.status(200).json({ message: "Developer deleted successfully", developer });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting developer", error });
+  }
+};
+
+
+
+
+export const viewAllClients = async (req, res) => {
+  try {
+
+    const clients = await Client.find();
+    if(clients.length===0){
+      return res.status(404).json({message:'No users in database'})
+    }
+    res.status(200).json({ message: "Clients fetched successfully", clients });
+  
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching clients", error });
+  }
+};
+
+export const blockClientById = async (req,res) => {
+  try {
+    const {id} = req.params;
+    const client = await Client.findByIdAndUpdate(id, {status:false},{new:true});
+    if(!client) {
+      return res.status(404).json({ message: "Client not found"})
+    }
+    res.status(200).json({ message: "Client blocked successfully", client});
+  } catch (error) {
+    res.status(500).json({ message: "Error blocking client", error})
+  }
+}
+
+export const updateClient = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+    const updatedClient = await Client.findByIdAndUpdate(id, updates, { new: true });
+    if (!updatedClient) {
+      return res.status(404).json({ message: "Client not found" });
+    }
+    res.status(200).json({ message: "Client updated successfully", updatedClient });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating client", error });
+  }
+};
+
+export const deleteClient = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const client = await Client.findByIdAndDelete(id);
+    if (!client) {
+      return res.status(404).json({ message: "Client not found" });
+    }
+    res.status(200).json({ message: "Client deleted successfully", client });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting client", error });
+  }
 };
 
 
