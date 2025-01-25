@@ -134,6 +134,7 @@ export const blockClientById = async (req,res) => {
   }
 }
 
+
 export const updateClient = async (req, res) => {
   try {
     const { id } = req.params;
@@ -147,6 +148,7 @@ export const updateClient = async (req, res) => {
     res.status(500).json({ message: "Error updating client", error });
   }
 };
+
 
 export const deleteClient = async (req, res) => {
   try {
@@ -182,6 +184,7 @@ export const generateReports = async (req, res) => {
     }
 };
 
+
 export const monitorJobs = async (req, res) => {
     try {
       const jobs = await Job.find();
@@ -191,6 +194,7 @@ export const monitorJobs = async (req, res) => {
     }
 };
 
+
 export const monitorTransactions = async (req,res) => {
     try{
         const transactions = await Transaction.find();
@@ -199,7 +203,8 @@ export const monitorTransactions = async (req,res) => {
         res.status(500).json({message: "Error fetching feedback",error});
     }
 }
-  
+ 
+
 export const monitorFeedback = async (req, res) => {
     try {
       const feedbacks = await Feedback.find().populate("developerId clientId");
