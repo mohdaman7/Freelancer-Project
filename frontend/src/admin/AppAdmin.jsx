@@ -4,6 +4,7 @@ import Login from './pages/login';
 import Dashboard from './pages/Dashboard';
 import UserManagement from './pages/UserManagement';
 import Jobs from './pages/Jobs';
+import Transaction from './pages/Transaction';
 
 const AppAdmin = () => {
   return (
@@ -12,6 +13,7 @@ const AppAdmin = () => {
         <Route path='/dashboard' element={<Dashboard/>}/>
         <Route path='/users' element={<UserManagement/>}/>
         <Route path='/jobs' element={<Jobs/>}/>
+        <Route path='/transactions' element={<Transaction/>}/>
     </Routes>
   )
 }
