@@ -1,15 +1,10 @@
 import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
   Search, Filter, Plus, Briefcase, Code, Star, Clock, DollarSign,
   MessageCircle, Award, TrendingUp, Users
 } from 'lucide-react';
 
 const Jobs = () => {
-//   const [viewMode, setViewMode] = useState('grid');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   const categories = [
@@ -62,33 +57,34 @@ const Jobs = () => {
   ];
 
   const renderServiceCard = (service) => (
-    <Card key={service.id} className="transition-all duration-300 hover:shadow-lg">
-      <CardHeader>
+    <div key={service.id} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
+      <div className="p-6">
         <div className="flex justify-between items-start">
           <div>
-            <CardTitle className="text-xl mb-2">{service.title}</CardTitle>
-            <CardDescription>
-              <div className="flex items-center gap-2 mb-2">
-                <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                <span className="font-medium">{service.provider.rating}</span>
-                <span className="text-gray-400">({service.provider.projects} projects)</span>
-              </div>
-            </CardDescription>
+            <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
+            <div className="flex items-center gap-2 mb-2">
+              <Star className="w-4 h-4 text-yellow-400 fill-current" />
+              <span className="font-medium">{service.provider.rating}</span>
+              <span className="text-gray-400">({service.provider.projects} projects)</span>
+            </div>
           </div>
-          <Badge variant={service.availability === "Available" ? "success" : "warning"}>
+          <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+            service.availability === "Available" 
+              ? "bg-green-100 text-green-800" 
+              : "bg-yellow-100 text-yellow-800"
+          }`}>
             {service.availability}
-          </Badge>
+          </span>
         </div>
-      </CardHeader>
-      <CardContent>
+
         <div className="space-y-4">
           <p className="text-gray-600">{service.description}</p>
           
           <div className="flex flex-wrap gap-2">
             {service.tags.map(tag => (
-              <Badge key={tag} variant="secondary" className="px-2 py-1">
+              <span key={tag} className="px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-sm">
                 {tag}
-              </Badge>
+              </span>
             ))}
           </div>
 
@@ -112,13 +108,13 @@ const Jobs = () => {
                 <span className="text-sm text-gray-600">Response: {service.provider.response}</span>
               </div>
             </div>
-            <Button className="bg-blue-600 hover:bg-blue-700">
+            <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
               Book Now
-            </Button>
+            </button>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 
   return (
@@ -129,44 +125,48 @@ const Jobs = () => {
           <h1 className="text-3xl font-bold mb-2">Developer Services</h1>
           <p className="text-gray-600">Find the perfect developer or service for your needs</p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700">
-          <Plus className="w-4 h-4 mr-2" />
+        <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2">
+          <Plus className="w-4 h-4" />
           Offer Your Services
-        </Button>
+        </button>
       </div>
 
       {/* Search and Filter Section */}
       <div className="bg-white rounded-lg shadow-sm p-4 mb-8">
         <div className="flex gap-4 mb-4">
-          <div className="flex-1">
-            <Input
+          <div className="flex-1 relative">
+            <input
+              type="text"
               placeholder="Search services, skills, or developers..."
-              className="w-full"
-              prefix={<Search className="w-4 h-4 text-gray-400" />}
+              className="w-full px-4 py-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
           </div>
-          <Button variant="outline" className="flex items-center gap-2">
+          <button className="px-4 py-2 border rounded-md hover:bg-gray-50 transition-colors flex items-center gap-2">
             <Filter className="w-4 h-4" />
             Filters
-          </Button>
-          <Button variant="outline" className="flex items-center gap-2">
+          </button>
+          <button className="px-4 py-2 border rounded-md hover:bg-gray-50 transition-colors flex items-center gap-2">
             <TrendingUp className="w-4 h-4" />
             Sort
-          </Button>
+          </button>
         </div>
 
         {/* Category Pills */}
         <div className="flex gap-2 overflow-x-auto pb-2">
           {categories.map(category => (
-            <Button
+            <button
               key={category.id}
-              variant={selectedCategory === category.id ? "default" : "outline"}
-              className="flex items-center gap-2 whitespace-nowrap"
+              className={`px-4 py-2 rounded-md flex items-center gap-2 whitespace-nowrap transition-colors ${
+                selectedCategory === category.id
+                  ? "bg-blue-600 text-white"
+                  : "border hover:bg-gray-50"
+              }`}
               onClick={() => setSelectedCategory(category.id)}
             >
               <category.icon className="w-4 h-4" />
               {category.name}
-            </Button>
+            </button>
           ))}
         </div>
       </div>
@@ -179,4 +179,4 @@ const Jobs = () => {
   );
 };
 
-export default Jobs;
+export default Jobs;    
