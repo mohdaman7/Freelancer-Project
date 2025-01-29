@@ -57,7 +57,7 @@ const UserManagement = () => {
     <div className="flex-1 p-6 bg-gray-50">
         <Header/>
       {/* Page Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-6 mt-16">
         <h1 className="text-2xl font-bold text-gray-800">User Management</h1>
         <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
           <UserPlus className="w-5 h-5" />

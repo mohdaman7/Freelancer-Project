@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import UserManagement from './pages/UserManagement';
 import Jobs from './pages/Jobs';
 import Transaction from './pages/Transaction';
+import Feedback from './pages/Feedback';
 
 const AppAdmin = () => {
   return (
@@ -14,6 +15,7 @@ const AppAdmin = () => {
         <Route path='/users' element={<UserManagement/>}/>
         <Route path='/jobs' element={<Jobs/>}/>
         <Route path='/transactions' element={<Transaction/>}/>
+        <Route path='/feedback' element={<Feedback/>}/>
     </Routes>
   )
 }
