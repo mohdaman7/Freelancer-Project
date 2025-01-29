@@ -40,7 +40,7 @@ const Analytics = () => {
         <Header/>
       <div className="flex">
         <Sidebar/>
-        <div className="p-6 bg-gray-50 min-h-screen">
+        <div className="p-6 bg-gray-50 min-h-screen mt-16">
           {/* Header */}
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-gray-800">
