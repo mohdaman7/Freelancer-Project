@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
-import { Bell, Settings, FileText } from "lucide-react";
+import { FileText } from "lucide-react";
 import axios from "axios";
 import Sidebar from "../components/Sidebar"; // Import the Sidebar component
 import Header from "../components/Header";
@@ -62,7 +62,7 @@ const Dashboard = () => {
           <Header/>
           </div>
 
-          {/* Metrics Cards */}
+
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 pt-16">
             <div className="bg-white p-6 rounded-lg shadow">
               <div className="flex items-center gap-4">
@@ -110,7 +110,6 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Charts */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div className="bg-white p-6 rounded-lg shadow">
               <div className="flex justify-between items-center mb-6">
@@ -159,7 +158,6 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Recent Activities & Quick Actions */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-2 bg-white p-6 rounded-lg shadow">
               <div className="flex justify-between items-center mb-6">

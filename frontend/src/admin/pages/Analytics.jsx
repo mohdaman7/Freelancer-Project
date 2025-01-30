@@ -40,8 +40,8 @@ const Analytics = () => {
         <Header/>
       <div className="flex">
         <Sidebar/>
-        <div className="p-6 bg-gray-50 min-h-screen mt-16">
-          {/* Header */}
+        <div className="p-6 bg-gray-50 min-h-screen mt-16 w-6xl">
+        
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-gray-800">
               Analytics Dashboard
@@ -51,14 +51,14 @@ const Analytics = () => {
             </p>
           </div>
 
-          {/* Stats Cards */}
+         
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
             <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-500 text-sm">Total Developers</p>
                   <p className="text-2xl font-bold text-gray-800">1,234</p>
-                  <p className="text-green-600 text-sm">↑ 12% vs last month</p>
+                  {/* <p className="text-green-600 text-sm">↑ 12% vs last month</p> */}
                 </div>
                 <Users className="h-8 w-8 text-blue-500" />
               </div>
@@ -69,7 +69,7 @@ const Analytics = () => {
                 <div>
                   <p className="text-gray-500 text-sm">Active Projects</p>
                   <p className="text-2xl font-bold text-gray-800">85</p>
-                  <p className="text-green-600 text-sm">↑ 8% vs last month</p>
+                  {/* <p className="text-green-600 text-sm">↑ 8% vs last month</p> */}
                 </div>
                 <Briefcase className="h-8 w-8 text-green-500" />
               </div>
@@ -80,7 +80,7 @@ const Analytics = () => {
                 <div>
                   <p className="text-gray-500 text-sm">Total Revenue</p>
                   <p className="text-2xl font-bold text-gray-800">$232,450</p>
-                  <p className="text-green-600 text-sm">↑ 15% vs last month</p>
+                  {/* <p className="text-green-600 text-sm">↑ 15% vs last month</p> */}
                 </div>
                 <CreditCard className="h-8 w-8 text-purple-500" />
               </div>
@@ -91,16 +91,16 @@ const Analytics = () => {
                 <div>
                   <p className="text-gray-500 text-sm">Success Rate</p>
                   <p className="text-2xl font-bold text-gray-800">94%</p>
-                  <p className="text-green-600 text-sm">↑ 3% vs last month</p>
+                  {/* <p className="text-green-600 text-sm">↑ 3% vs last month</p> */}
                 </div>
                 <Target className="h-8 w-8 text-yellow-500" />
               </div>
             </div>
           </div>
 
-          {/* Charts */}
+          
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            {/* Revenue Trend */}
+            
             <div className="bg-white p-6 rounded-lg border border-gray-200">
               <h2 className="text-lg font-semibold mb-4">Revenue Trend</h2>
               <div className="h-80">
@@ -121,7 +121,7 @@ const Analytics = () => {
               </div>
             </div>
 
-            {/* Project Categories */}
+            
             <div className="bg-white p-6 rounded-lg border border-gray-200">
               <h2 className="text-lg font-semibold mb-4">Project Categories</h2>
               <div className="h-80">
@@ -164,7 +164,7 @@ const Analytics = () => {
             </div>
           </div>
 
-          {/* Developer and Project Trends */}
+         
           <div className="bg-white p-6 rounded-lg border border-gray-200">
             <h2 className="text-lg font-semibold mb-4">Growth Trends</h2>
             <div className="h-80">

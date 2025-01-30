@@ -56,7 +56,7 @@ const UserManagement = () => {
         <Sidebar/>
     <div className="flex-1 p-6 bg-gray-50">
         <Header/>
-      {/* Page Header */}
+      
       <div className="flex justify-between items-center mb-6 mt-16">
         <h1 className="text-2xl font-bold text-gray-800">User Management</h1>
         <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
@@ -65,7 +65,7 @@ const UserManagement = () => {
         </button>
       </div>
 
-      {/* Stats Cards */}
+      
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
           <h3 className="text-gray-500 text-sm">Total Users</h3>
@@ -97,10 +97,10 @@ const UserManagement = () => {
         </div>
       </div>
 
-      {/* Filters and Search */}
+      
       <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          {/* Tabs */}
+         
           <div className="flex space-x-4">
             <button 
               onClick={() => setSelectedTab('all')}
@@ -134,7 +134,7 @@ const UserManagement = () => {
             </button>
           </div>
 
-          {/* Search and Filter */}
+          
           <div className="flex gap-4">
             <div className="relative">
               <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -154,7 +154,7 @@ const UserManagement = () => {
         </div>
       </div>
 
-      {/* Users Table */}
+      
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -246,7 +246,7 @@ const UserManagement = () => {
           </tbody>
         </table>
 
-        {/* Pagination */}
+        
         <div className="px-6 py-4 border-t border-gray-200">
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-500">

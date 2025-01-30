@@ -266,8 +266,8 @@ const Transaction = () => {
         <Header/>
       <div className="flex">
         <Sidebar/>
-        <div className="p-6 space-y-6">
-          {/* Quick Actions */}
+        <div className="p-6 space-y-6 w-6xl">
+          
           <div className="flex justify-end space-x-4 mb-6 mt-16">
             <button className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
               <CreditCard className="mr-2 h-4 w-4" />
@@ -279,7 +279,7 @@ const Transaction = () => {
             </button>
           </div>
 
-          {/* Summary Cards */}
+
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Card>
               <h3 className="text-sm font-medium mb-2">Total Transactions</h3>
@@ -306,9 +306,9 @@ const Transaction = () => {
             </Card>
           </div>
 
-          {/* Analytics Cards */}
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Transaction Chart */}
+          
             <Card>
               <h3 className="text-lg font-semibold mb-4">
                 Transaction Overview
@@ -325,7 +325,7 @@ const Transaction = () => {
               </div>
             </Card>
 
-            {/* Payment Methods Distribution */}
+            
             <Card>
               <h3 className="text-lg font-semibold mb-4">
                 Payment Methods Distribution
@@ -347,7 +347,7 @@ const Transaction = () => {
             </Card>
           </div>
 
-          {/* Transaction List */}
+         
           <Card>
             <h3 className="text-lg font-semibold mb-4">Recent Transactions</h3>
             <div className="flex items-center space-x-4 mb-4">
@@ -443,7 +443,7 @@ const Transaction = () => {
               </table>
             </div>
 
-            {/* Pagination */}
+            
             <div className="flex items-center justify-between mt-4">
               <div className="text-sm text-gray-500">
                 Showing 1-10 of 50 transactions
@@ -459,12 +459,12 @@ const Transaction = () => {
             </div>
           </Card>
 
-          {/* Transaction Details Modal */}
+          
           {selectedTransaction && (
             <TransactionDetails transaction={selectedTransaction} />
           )}
 
-          {/* Refund Modal */}
+          
           <Dialog open={showRefundModal} onOpenChange={setShowRefundModal}>
             <h2 className="text-xl font-bold mb-4">Process Refund</h2>
             <div className="grid gap-4 py-4">
