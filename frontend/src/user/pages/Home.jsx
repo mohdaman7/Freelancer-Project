@@ -5,15 +5,16 @@ import {
   Coins, FileCode, BookOpen, Terminal, ThumbsUp
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const HomePage = () => {
   return (
     <div className="min-h-screen bg-gray-900">
-      {/* Animated background gradient */}
+     
       <div className="absolute inset-0 bg-gradient-to-b from-blue-900/20 via-violet-900/20 to-transparent pointer-events-none" />
       <Navbar/>
 
-      {/* Hero Section */}
+  
       <div className="container mx-auto px-4 pt-32 pb-20 relative">
         <div className="text-center max-w-4xl mx-auto">
           <div className="bg-gray-800 text-blue-400 mb-4 py-2 px-4 rounded-full inline-block">
@@ -39,7 +40,7 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* Features Grid */}
+        
         <div className="grid grid-cols-3 gap-6 mt-20">
           {[
             {
@@ -92,7 +93,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Services Section */}
+      
       <div className="bg-gray-800/50 py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -149,7 +150,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* How It Works */}
+    
       <div className="py-20">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-white text-center mb-16">Simple Process, Amazing Results</h2>
@@ -191,7 +192,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* CTA Section */}
+      
       <div className="bg-gradient-to-r from-blue-600 to-violet-600 text-white py-20">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-4">Ready to Transform Your Ideas?</h2>
@@ -208,7 +209,9 @@ const HomePage = () => {
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
+    
   );
 };
 
