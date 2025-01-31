@@ -215,3 +215,103 @@ export const monitorFeedback = async (req, res) => {
 };
   
 
+export const getDashboardMetrics = async (req, res) => {
+  try {
+    // Total Users (Developers + Clients)
+    const totalDevelopers = await Developer.countDocuments();
+    const totalClients = await Client.countDocuments();
+    const totalUsers = totalDevelopers + totalClients;
+
+    // Active Jobs (Jobs with status "active")
+    const activeJobs = await Job.countDocuments({ status: "active" });
+
+    // Monthly Revenue (Sum of all transactions in the last 30 days)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const monthlyRevenue = await Transaction.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: thirtyDaysAgo },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$amount" },
+        },
+      },
+    ]);
+    const revenue = monthlyRevenue.length > 0 ? monthlyRevenue[0].total : 0;
+
+    // Pending Issues (Feedback with status "pending")
+    const pendingIssues = await Feedback.countDocuments({ status: "pending" });
+
+    // User Activity Data (Last 7 days)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const userActivity = await Developer.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: sevenDaysAgo },
+        },
+      },
+      {
+        $group: {
+          _id: { $dayOfWeek: "$createdAt" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          day: "$_id",
+          count: 1,
+          _id: 0,
+        },
+      },
+    ]);
+
+    // Revenue Data (Last 7 days)
+    const revenueData = await Transaction.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: sevenDaysAgo },
+        },
+      },
+      {
+        $group: {
+          _id: { $dayOfWeek: "$createdAt" },
+          total: { $sum: "$amount" },
+        },
+      },
+      {
+        $project: {
+          day: "$_id",
+          total: 1,
+          _id: 0,
+        },
+      },
+    ]);
+
+    // Recent Activities (Last 5 activities)
+    const recentActivities = await Feedback.find()
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .populate("developerId clientId");
+
+    res.status(200).json({
+      message: "Dashboard metrics fetched successfully",
+      metrics: {
+        totalUsers,
+        activeJobs,
+        monthlyRevenue: revenue,
+        pendingIssues,
+      },
+      userActivity,
+      revenueData,
+      recentActivities,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching dashboard metrics", error });
+  }
+};
+

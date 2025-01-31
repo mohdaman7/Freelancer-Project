@@ -1,5 +1,5 @@
 
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
   LayoutDashboard, 
   Users, 
@@ -11,8 +11,10 @@ import {
   LogOut
 } from 'lucide-react';
 
+
 const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const menuItems = [
     { path: "/admin/dashboard", name: "Dashboard", icon: LayoutDashboard },
@@ -62,7 +64,7 @@ const Sidebar = () => {
           className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-gray-400 hover:bg-gray-700 hover:text-white transition-colors duration-200"
           onClick={() => {/* Add logout handler */}}
         >
-          <LogOut className="h-5 w-5" />
+          <LogOut className="h-5 w-5" onClick={()=>navigate('/')}/>
           <span className="font-medium">Logout</span>
         </button>
       </div>

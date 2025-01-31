@@ -15,6 +15,7 @@ import {
   monitorJobs,
   monitorTransactions,
   monitorFeedback,
+  getDashboardMetrics,
 } from "../controllers/adminController.js";
 
 const router = express.Router();
@@ -36,6 +37,7 @@ router.patch("/clients/:id/block", blockClientById);
 router.delete("/clients/:id", deleteClient);
 
 // Other routes
+router.get('/dashboard-metrics',getDashboardMetrics)
 router.get("/reports", generateReports);
 router.get("/jobs", monitorJobs);
 router.get("/transactions", monitorTransactions);
