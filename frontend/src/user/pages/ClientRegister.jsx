@@ -1,195 +1,144 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { Eye, EyeOff, ArrowLeft, CheckCircle } from 'lucide-react';
+
+import { useState } from "react"
+import axios from "axios"
+import { Eye, EyeOff, ArrowLeft, CheckCircle, User, Mail, Building, Lock } from "lucide-react"
+import { Link, useNavigate } from "react-router-dom"
+import { toast } from "sonner";
 
 const ClientRegister = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    company: ''
-  });
+    name: "",
+    email: "",
+    password: "",
+    company: "",
+  })
 
-  const [errors, setErrors] = useState({});
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [apiError, setApiError] = useState('');
-
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
-    }
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-    if (!formData.company.trim()) newErrors.company = 'Company name is required';
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [apiError, setApiError] = useState("")
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setApiError('');
+    e.preventDefault()
+    setApiError("")
+    setIsLoading(true)
 
-    if (!validateForm()) return;
-
-    setIsLoading(true);
     try {
-      const response = await axios.post('/api/register/client', formData);
-      if (response.data.message === "Client registered successfully") {
-        // Successful registration
-        navigate('/login', { state: { message: 'Registration successful! Please log in.' } });
-      }
+      const response = await axios.post("/api/register/client", formData)
+      toast.success(response.data.message)
+      navigate('/login')      
     } catch (error) {
-      if (error.response?.data?.message === "email already taken!") {
-        setErrors({ ...errors, email: 'Email is already taken' });
-      } else {
-        setApiError('Registration failed. Please try again later.');
-      }
+        setApiError("Error registering client. Please try again later.",error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
-      <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-r from-purple-600 to-blue-600 transform -skew-y-6 z-0" />
-      
-      <div className="relative container mx-auto px-4 py-16">
-        <Link to="/" className="inline-flex items-center text-purple-600 hover:text-purple-700 mb-8">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Home
-        </Link>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center p-4">
+      <div
+        className="absolute top-0 left-0 w-full h-full bg-cover bg-center z-0"
+        style={{ backgroundImage: "url('/placeholder.svg?height=1080&width=1920')" }}
+      />
+      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-10" />
 
-        <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
-          <div className="md:flex">
-            {/* Left Side - Information */}
-            <div className="md:w-1/2 bg-gradient-to-br from-purple-600 to-blue-600 p-12 text-white">
-              <h2 className="text-3xl font-bold mb-6">Join Our Network</h2>
-              <p className="mb-8">Create your client account and start hiring talented developers</p>
-              
-              <div className="space-y-6">
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 mr-3" />
-                  <span>Access to skilled developers</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 mr-3" />
-                  <span>Post unlimited projects</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 mr-3" />
-                  <span>Secure payment system</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 mr-3" />
-                  <span>24/7 customer support</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Side - Form */}
-            <div className="md:w-1/2 p-12">
-              <h3 className="text-2xl font-bold text-gray-900 mb-8">Create Your Account</h3>
-
-              {apiError && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg">
-                  {apiError}
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      errors.name ? 'border-red-500' : 'border-gray-300'
-                    } focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
-                  />
-                  {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      errors.email ? 'border-red-500' : 'border-gray-300'
-                    } focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
-                  />
-                  {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
-                  <input
-                    type="text"
-                    value={formData.company}
-                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      errors.company ? 'border-red-500' : 'border-gray-300'
-                    } focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
-                  />
-                  {errors.company && <p className="mt-1 text-sm text-red-500">{errors.company}</p>}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                  <div className="relative">
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      value={formData.password}
-                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className={`w-full px-4 py-2 rounded-lg border ${
-                        errors.password ? 'border-red-500' : 'border-gray-300'
-                      } focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                    >
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
-                  </div>
-                  {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isLoading ? 'Creating Account...' : 'Create Account'}
-                </button>
-              </form>
-
-              <p className="mt-6 text-center text-gray-600">
-                Already have an account?{' '}
-                <Link to="/login" className="text-purple-600 hover:text-purple-700 font-medium">
-                  Log In
-                </Link>
+      <div className="relative z-20 w-full max-w-6xl bg-white bg-opacity-90 rounded-3xl shadow-2xl overflow-hidden">
+        <div className="md:flex">
+          {/* Left Side - Information */}
+          <div className="md:w-5/12 bg-gradient-to-br from-purple-600 to-blue-600 p-12 text-white flex flex-col justify-between">
+            <div>
+              <Link
+                href="/"
+                className="inline-flex items-center text-white hover:text-purple-200 transition-colors mb-12"
+              >
+                <ArrowLeft className="w-5 h-5 mr-2" />
+                Back to Home
+              </Link>
+              <h2 className="text-4xl font-bold mb-6">Join Our Network</h2>
+              <p className="text-lg mb-8 text-purple-100">
+                Create your client account and start hiring talented developers for your projects.
               </p>
             </div>
+
+            <div className="space-y-6">
+              {[
+                { icon: CheckCircle, text: "Access to skilled developers" },
+                { icon: CheckCircle, text: "Post unlimited projects" },
+                { icon: CheckCircle, text: "Secure payment system" },
+                { icon: CheckCircle, text: "24/7 customer support" },
+              ].map((item, index) => (
+                <div key={index} className="flex items-center">
+                  <item.icon className="w-6 h-6 mr-3 text-purple-300" />
+                  <span className="text-lg">{item.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Side - Form */}
+          <div className="md:w-7/12 p-12">
+            <h3 className="text-3xl font-bold text-gray-900 mb-8">Create Your Account</h3>
+
+            {apiError && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-lg">{apiError}</div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {[
+                { label: "Full Name", icon: User, type: "text", key: "name" },
+                { label: "Email", icon: Mail, type: "email", key: "email" },
+                { label: "Company Name", icon: Building, type: "text", key: "company" },
+                { label: "Password", icon: Lock, type: "password", key: "password" },
+              ].map((field) => (
+                <div key={field.key}>
+                  <label htmlFor={field.key} className="block text-sm font-medium text-gray-700 mb-1">
+                    {field.label}
+                  </label>
+                  <div className="relative">
+                    <field.icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <input
+                      type={field.key === "password" ? (showPassword ? "text" : "password") : field.type}
+                      id={field.key}
+                      name={field.key}
+                      value={formData[field.key]}
+                      onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value })}
+                      required
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                    {field.key === "password" && (
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                      >
+                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-4 rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? "Creating Account..." : "Create Account"}
+              </button>
+            </form>
+
+            <p className="mt-8 text-center text-gray-600">
+              Already have an account?{" "}
+              <Link href="/login" className="text-purple-600 hover:text-purple-700 font-medium">
+                Log In
+              </Link>
+            </p>
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ClientRegister;
+export default ClientRegister
+
