@@ -129,7 +129,7 @@ const ClientRegister = () => {
 
             <p className="mt-8 text-center text-gray-600">
               Already have an account?{" "}
-              <Link href="/login" className="text-purple-600 hover:text-purple-700 font-medium">
+              <Link to="/client-login" className="text-purple-600 hover:text-purple-700 font-medium">
                 Log In
               </Link>
             </p>
