@@ -5,7 +5,7 @@ import {
   getClientProfile,
   createJob,
 } from "../controllers/clientController.js";
-import { authenticateUser } from "../middlewares/authMiddleware.js";
+import { authenticateUser } from "../middlewares/userMiddleware.js";
 
 const router = express.Router();
 

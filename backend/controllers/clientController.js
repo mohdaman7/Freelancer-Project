@@ -1,32 +1,32 @@
 import Client from "../models/clientModel.js";
-import ClientAuthJoi from "../validations/clientAuthJoi.js"; // Import your Joi schema
+import { ClientRegisterJoi, ClientLoginJoi } from "../validation/Clientauthjoi.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+
+
 
 export const registerClient = async (req, res) => {
   const { name, email, password, company } = req.body;
 
   try {
-    // Validate request body using Joi
-    const { error } = ClientAuthJoi.validate({ name, email, password, company });
+    
+    const { error } = ClientRegisterJoi.validate({ name, email, password, company });
     if (error) {
-      return res.status(400).json({
-        status: "error",
-        message: error.details[0].message, // Return the first validation error
-      });
+      return res.status(400).json({ status: "error", message: error.details[0].message });
     }
 
-    // Check if client already exists
+    
     const isExistingClient = await Client.findOne({ email });
     if (isExistingClient) {
-      return res
-        .status(400)
-        .json({ status: "error", message: "Email already taken!" });
+      return res.status(400).json({ status: "error", message: "Email already taken!" });
     }
 
-    // Create a new client
-    const client = new Client({ name, email, password, company });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    console.log("Hashed Password (Before Saving):", hashedPassword);
+
+    const client = new Client({ name, email, password: hashedPassword, company });
     await client.save();
 
-    // Send response
     res.status(201).json({
       message: "Client registered successfully",
       client: { id: client._id, name: client.name, email: client.email },
@@ -38,40 +38,42 @@ export const registerClient = async (req, res) => {
 };
 
 
+
+
 // Login a client
+
+
+
 export const loginClient = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Validate request body using Joi
-    const { error } = ClentAuthJoi.validate({ email, password });
+    
+    const { error } = ClientLoginJoi.validate({ email, password });
     if (error) {
-      return res.status(400).json({
-        status: "error",
-        message: error.details[0].message, // Return the first validation error
-      });
+      return res.status(400).json({ status: "error", message: error.details[0].message });
     }
 
-    // Find the client by email
+   
     const client = await Client.findOne({ email });
     if (!client) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ status: "error", message: "Invalid credentials" });
     }
 
-    // Check password (plaintext comparison - not recommended for production)
-    if (client.password !== password) {
-      return res.status(401).json({ message: "Invalid credentials" });
+    console.log("Stored Hashed Password:", client.password);
+    console.log("Entered Password:", password);
+
+    const isMatch = await bcrypt.compare(password, client.password);
+    console.log("Password Match:", isMatch);
+
+    if (!isMatch) {
+      return res.status(401).json({ status: "error", message: "Invalid credentials" });
     }
 
-    // Generate JWT token
-    const token = jwt.sign({ id: client._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h", // Token expires in 1 hour
-    });
+    const token = jwt.sign({ id: client._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-    // Set token in HTTP-only cookie
-    res.cookie("token", token, { httpOnly: true, secure: true }); // Use `secure: true` in production
+    res.cookie("token", token, { httpOnly: true, secure: true });
 
-    // Send response
     res.status(200).json({
       message: "Login successful",
       client: { id: client._id, name: client.name, email: client.email },
@@ -83,26 +85,24 @@ export const loginClient = async (req, res) => {
   }
 };
 
+
+
+
+
 // Get client profile
 export const getClientProfile = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const client = await Client.findById(id);
+    const client = await Client.findById(id).select("-password"); // Exclude password
     if (!client) {
       return res.status(404).json({ message: "Client not found" });
     }
 
-    // Send response (exclude sensitive data like password)
-    res.status(200).json({
-      id: client._id,
-      name: client.name,
-      email: client.email,
-      company: client.company,
-    });
+    res.status(200).json(client);
   } catch (error) {
     console.error("Error fetching client profile:", error);
-    res.status(500).json({ message: "Error fetching client profile", error });
+    res.status(500).json({ message: "Error fetching client profile", error: error.message });
   }
 };
 
@@ -128,10 +128,9 @@ export const createJob = async (req, res) => {
     });
     await job.save();
 
-    // Send response
     res.status(201).json({ message: "Job created successfully", job });
   } catch (error) {
     console.error("Error creating job:", error);
-    res.status(500).json({ message: "Error creating job", error });
+    res.status(500).json({ message: "Error creating job", error: error.message });
   }
 };

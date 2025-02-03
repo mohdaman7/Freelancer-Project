@@ -1,17 +1,18 @@
 import joi from 'joi';
 
-const ClientAuthJoi = joi.object({
+// Register validation schema
+const ClientRegisterJoi = joi.object({
   name: joi.string().min(3).max(30).required()
     .messages({
-      'string.empty': 'Username is required',
-      'string.min': 'Username should have at least 3 characters',
-      'string.max': 'Username should not exceed 30 characters',
-      'any.required': 'Username is a required field',
+      'string.empty': 'name is required',
+      'string.min': 'name should have at least 3 characters',
+      'string.max': 'name should not exceed 30 characters',
+      'any.required': 'name is a required field',
     }),
 
   email: joi.string().email({
     minDomainSegments: 2,
-    tlds: { allow: ['com', 'net', 'org', 'io', 'co'] }, // Added more TLDs
+    tlds: { allow: ['com', 'net', 'org', 'io', 'co'] },
   }).lowercase().required().trim()
     .messages({
       'string.email': 'Please provide a valid email',
@@ -34,4 +35,19 @@ const ClientAuthJoi = joi.object({
     }),
 });
 
-export default ClientAuthJoi;
+// Login validation schema (only email and password)
+const ClientLoginJoi = joi.object({
+  email: joi.string().email().required()
+    .messages({
+      'string.email': 'Please provide a valid email',
+      'any.required': 'Email is a required field',
+    }),
+
+  password: joi.string().min(8).required()
+    .messages({
+      'string.min': 'Password should have at least 8 characters',
+      'any.required': 'Password is a required field',
+    }),
+});
+
+export { ClientRegisterJoi, ClientLoginJoi };
