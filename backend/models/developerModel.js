@@ -32,15 +32,12 @@ const developerSchema = new mongoose.Schema({
     required: true 
   },
 
-
   portfolioUrl: { type: String },
   githubUrl: { type: String },
   linkedinUrl: { type: String },
 
-  
   country: { type: String },
 
- 
   balance: { type: Number, default: 0 },
   rating: { type: Number, default: 0, min: 0, max: 5 },
   status: { type: Boolean, default: true },

@@ -4,6 +4,7 @@ import GetStartedPage from './components/GetStarted';
 import ClientRegister from './pages/ClientRegister';
 import ClientLogin from './pages/ClientLogin';
 import DeveloperRegister from './pages/DeveloperRegister';
+import Developers from './pages/Developers';
 
 const AppUser = () => {
   return (
@@ -13,6 +14,7 @@ const AppUser = () => {
         <Route path='/client-register' element={<ClientRegister/>} />
         <Route path='/client-login' element={<ClientLogin/>}/>
         <Route path='/freelancer-register' element={<DeveloperRegister/>}/>
+        <Route path='/developers' element={<Developers/>}/>
     </Routes>
   )
 }
