@@ -21,7 +21,9 @@ export const registerDeveloper = async (req, res) => {
       githubUrl,
       linkedinUrl,
       profilePhoto,
-      bio
+      bio,
+      rating,
+      status,
     } = req.body;
 
     if (!firstName || !lastName || !email || !password) {
@@ -51,7 +53,9 @@ export const registerDeveloper = async (req, res) => {
       githubUrl,
       linkedinUrl,
       profilePhoto,
-      bio
+      bio,
+      rating,
+      status,
     });
     await developer.save();
 
