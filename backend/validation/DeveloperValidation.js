@@ -48,6 +48,11 @@ const DeveloperAuthJoi = joi.object({
     'string.uri': 'LinkedIn URL must be a valid URL',
   }),
   
+  profilePhoto: joi.string().allow('').optional(), 
+  bio: joi.string().allow('').optional(),
+  rating: joi.number().min(0).max(5).optional(), 
+  status: joi.boolean().optional(), 
+
 });
 
 // Middleware function for validation

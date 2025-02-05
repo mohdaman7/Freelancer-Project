@@ -27,6 +27,10 @@ const Developers = () => {
   const [currentPage, setCurrentPage] = useState(1); // State for pagination
   const developersPerPage = 6; // Number of developers to display per page
 
+  console.log(developers,'dakjhfak jhd')
+
+  
+
   // Fetch developers data from the backend
   useEffect(() => {
     const fetchDevelopers = async () => {

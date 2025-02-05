@@ -5,22 +5,29 @@ import bcrypt from "bcrypt";
 
 
 export const registerDeveloper = async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    email,
-    password,
-    title,
-    hourlyRate,
-    country,
-    skills,
-    experienceLevel,
-    portfolioUrl,
-    githubUrl,
-    linkedinUrl,
-  } = req.body;
 
   try {
+
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      title,
+      hourlyRate,
+      country,
+      skills,
+      experienceLevel,
+      githubUrl,
+      linkedinUrl,
+      profilePhoto,
+      bio
+    } = req.body;
+
+    if (!firstName || !lastName || !email || !password) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
     // Check if email is already taken
     const isExistingUser = await Developer.findOne({ email });
     if (isExistingUser) {
@@ -31,7 +38,7 @@ export const registerDeveloper = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     
-    const developer = new Developer({
+    const developer = await Developer.create({
       firstName,
       lastName,
       email,
@@ -41,11 +48,11 @@ export const registerDeveloper = async (req, res) => {
       country,
       skills,
       experienceLevel,
-      portfolioUrl,
       githubUrl,
       linkedinUrl,
+      profilePhoto,
+      bio
     });
-
     await developer.save();
 
     // Generate JWT token
@@ -107,11 +114,10 @@ export const loginDeveloper = async (req, res) => {
   }
 };
 
-// Get Developer Profile
-// Get All Developer Profiles
+
 export const getDeveloperProfile = async (req, res) => {
   try {
-    // Fetch all developers, excluding sensitive data
+    
     const developers = await Developer.find()
       .select("-password -__v -createdAt -updatedAt");
 
@@ -122,7 +128,7 @@ export const getDeveloperProfile = async (req, res) => {
       });
     }
 
-    // Format the response
+    
     const profiles = developers.map((developer) => ({
       id: developer._id,
       name: `${developer.firstName} ${developer.lastName}`,
@@ -130,11 +136,14 @@ export const getDeveloperProfile = async (req, res) => {
       title: developer.title,
       hourlyRate: developer.hourlyRate,
       country: developer.country,
-      portfolioUrl: developer.portfolioUrl,
       githubUrl: developer.githubUrl,
       linkedinUrl: developer.linkedinUrl,
       skills: developer.skills,
       experienceLevel: developer.experienceLevel,
+      profilePhoto: developer.profilePhoto,
+      bio: developer.bio,
+      rating: developer.rating,
+      status: developer.status
     }));
 
     res.status(200).json({
@@ -175,11 +184,14 @@ export const getDeveloperProfileById = async (req, res) => {
       title: developer.title,
       hourlyRate: developer.hourlyRate,
       country: developer.country,
-      portfolioUrl: developer.portfolioUrl,
       githubUrl: developer.githubUrl,
       linkedinUrl: developer.linkedinUrl,
       skills: developer.skills,
       experienceLevel: developer.experienceLevel,
+      profilePhoto: developer.profilePhoto,
+      bio: developer.bio,
+      rating: developer.rating,
+      status: developer.status
     };
 
     res.status(200).json({

@@ -12,13 +12,24 @@ const developerSchema = new mongoose.Schema(
     skills: [
       {
         name: { type: String, required: true },
-        experience: { type: String, enum: ["Beginner", "Intermediate", "Expert"], required: true },
+        experience: {
+          type: String,
+          enum: ["Beginner", "Intermediate", "Expert"],
+          required: true
+        },
       },
     ],
-    experienceLevel: { type: String, required: true },
-    portfolioUrl: { type: String },
+    experienceLevel: {
+      type: String,
+      enum: ["Junior", "Mid-Level", "Senior"],
+      required: true
+    },
     githubUrl: { type: String },
     linkedinUrl: { type: String },
+    profilePhoto: { type: String }, 
+    bio: { type: String },
+    rating: { type: Number },
+    status: { type: Boolean, default: false } 
   },
   { timestamps: true }
 );
