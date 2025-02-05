@@ -7,6 +7,7 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import adminRoute from './routes/adminRoute.js'
 import clientRoute from './routes/clientRoute.js'
+import developerRoute from './routes/developerRoute.js'
 
 // Fix for ES module __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -29,6 +30,7 @@ app.use(express.static(__dirname));
 
 app.use("/api/admin",adminRoute)
 app.use("/api/client",clientRoute)
+app.use("/api/developer",developerRoute)
 
 
 app.use('/', (req, res) => {

@@ -1,10 +1,24 @@
+
 import Developer from "../models/developerModel.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 
-// Register Developer
+
 export const registerDeveloper = async (req, res) => {
-  const { firstName, lastName, email, password, title, hourlyRate, country, portfolioUrl, githubUrl, linkedinUrl } = req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    title,
+    hourlyRate,
+    country,
+    skills,
+    experienceLevel,
+    portfolioUrl,
+    githubUrl,
+    linkedinUrl,
+  } = req.body;
 
   try {
     // Check if email is already taken
@@ -13,17 +27,20 @@ export const registerDeveloper = async (req, res) => {
       return res.status(400).json({ status: "error", message: "Email already taken!" });
     }
 
-    // Hash password
+  
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new developer
+    
     const developer = new Developer({
-      name: `${firstName} ${lastName}`,
+      firstName,
+      lastName,
       email,
       password: hashedPassword,
       title,
       hourlyRate,
       country,
+      skills,
+      experienceLevel,
       portfolioUrl,
       githubUrl,
       linkedinUrl,
@@ -39,7 +56,7 @@ export const registerDeveloper = async (req, res) => {
       message: "Developer registered successfully",
       developer: {
         id: developer._id,
-        name: developer.name,
+        name: `${developer.firstName} ${developer.lastName}`,
         email: developer.email,
         title: developer.title,
       },
@@ -50,6 +67,7 @@ export const registerDeveloper = async (req, res) => {
     res.status(500).json({ message: "Error registering developer", error });
   }
 };
+
 
 // Login Developer
 export const loginDeveloper = async (req, res) => {
@@ -90,19 +108,24 @@ export const loginDeveloper = async (req, res) => {
 };
 
 // Get Developer Profile
+// Get All Developer Profiles
 export const getDeveloperProfile = async (req, res) => {
-  const { id } = req.user;
-
   try {
-    const developer = await Developer.findById(id);
-    if (!developer) {
-      return res.status(404).json({ message: "Developer not found" });
+    // Fetch all developers, excluding sensitive data
+    const developers = await Developer.find()
+      .select("-password -__v -createdAt -updatedAt");
+
+    if (!developers || developers.length === 0) {
+      return res.status(404).json({
+        status: "error",
+        message: "No developers found",
+      });
     }
 
-    // Exclude sensitive data
-    const profile = {
+    // Format the response
+    const profiles = developers.map((developer) => ({
       id: developer._id,
-      name: developer.name,
+      name: `${developer.firstName} ${developer.lastName}`,
       email: developer.email,
       title: developer.title,
       hourlyRate: developer.hourlyRate,
@@ -110,41 +133,67 @@ export const getDeveloperProfile = async (req, res) => {
       portfolioUrl: developer.portfolioUrl,
       githubUrl: developer.githubUrl,
       linkedinUrl: developer.linkedinUrl,
-    };
-
-    res.status(200).json(profile);
-  } catch (error) {
-    console.error("Error fetching developer profile:", error);
-    res.status(500).json({ message: "Error fetching developer profile", error });
-  }
-};
-
-// Update Developer Profile
-export const updateDeveloperProfile = async (req, res) => {
-  const { id } = req.params;
-  const { name, title, hourlyRate, country, portfolioUrl, githubUrl, linkedinUrl } = req.body;
-
-  try {
-    const updatedDeveloper = await Developer.findByIdAndUpdate(
-      id,
-      { name, title, hourlyRate, country, portfolioUrl, githubUrl, linkedinUrl },
-      { new: true }
-    );
-
-    if (!updatedDeveloper) {
-      return res.status(404).json({ message: "Developer not found" });
-    }
+      skills: developer.skills,
+      experienceLevel: developer.experienceLevel,
+    }));
 
     res.status(200).json({
-      message: "Profile updated successfully",
-      developer: updatedDeveloper,
+      status: "success",
+      results: developers.length,
+      data: profiles,
     });
   } catch (error) {
-    console.error("Error updating profile:", error);
-    res.status(500).json({ message: "Error updating profile", error });
+    console.error("Error fetching developer profiles:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal server error fetching developer profiles",
+    });
   }
 };
 
+// Get Developer Profile by ID
+export const getDeveloperProfileById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Fetch developer by ID, excluding sensitive data
+    const developer = await Developer.findById(id)
+      .select("-password -__v -createdAt -updatedAt");
+
+    if (!developer) {
+      return res.status(404).json({
+        status: "error",
+        message: "Developer not found",
+      });
+    }
+
+    // Format the response
+    const profile = {
+      id: developer._id,
+      name: `${developer.firstName} ${developer.lastName}`,
+      email: developer.email,
+      title: developer.title,
+      hourlyRate: developer.hourlyRate,
+      country: developer.country,
+      portfolioUrl: developer.portfolioUrl,
+      githubUrl: developer.githubUrl,
+      linkedinUrl: developer.linkedinUrl,
+      skills: developer.skills,
+      experienceLevel: developer.experienceLevel,
+    };
+
+    res.status(200).json({
+      status: "success",
+      data: profile,
+    });
+  } catch (error) {
+    console.error("Error fetching developer profile by ID:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal server error fetching developer profile",
+    });
+  }
+};
 // Add Service
 export const addService = async (req, res) => {
   const { id } = req.params;
