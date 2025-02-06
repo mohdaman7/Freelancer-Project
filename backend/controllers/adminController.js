@@ -217,15 +217,15 @@ export const monitorFeedback = async (req, res) => {
 
 export const getDashboardMetrics = async (req, res) => {
   try {
-    // Total Users (Developers + Clients)
+   
     const totalDevelopers = await Developer.countDocuments();
     const totalClients = await Client.countDocuments();
     const totalUsers = totalDevelopers + totalClients;
 
-    // Active Jobs (Jobs with status "active")
+    
     const activeJobs = await Job.countDocuments({ status: "active" });
 
-    // Monthly Revenue (Sum of all transactions in the last 30 days)
+    
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     const monthlyRevenue = await Transaction.aggregate([
@@ -243,10 +243,10 @@ export const getDashboardMetrics = async (req, res) => {
     ]);
     const revenue = monthlyRevenue.length > 0 ? monthlyRevenue[0].total : 0;
 
-    // Pending Issues (Feedback with status "pending")
+   
     const pendingIssues = await Feedback.countDocuments({ status: "pending" });
 
-    // User Activity Data (Last 7 days)
+    
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const userActivity = await Developer.aggregate([
@@ -270,7 +270,7 @@ export const getDashboardMetrics = async (req, res) => {
       },
     ]);
 
-    // Revenue Data (Last 7 days)
+    
     const revenueData = await Transaction.aggregate([
       {
         $match: {
@@ -292,7 +292,7 @@ export const getDashboardMetrics = async (req, res) => {
       },
     ]);
 
-    // Recent Activities (Last 5 activities)
+
     const recentActivities = await Feedback.find()
       .sort({ createdAt: -1 })
       .limit(5)

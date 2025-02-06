@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className="bg-gray-900 border-t border-gray-800 text-gray-300">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Logo and Description */}
+          
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <Code className="w-8 h-8 text-blue-400" />
@@ -16,7 +16,7 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Quick Links */}
+          
           <div>
             <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
             <ul className="space-y-2">
@@ -27,7 +27,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Social Media */}
+          
           <div>
             <h3 className="text-lg font-semibold text-white mb-4">Follow Us</h3>
             <div className="flex gap-4">
@@ -46,7 +46,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Newsletter */}
+        
           <div>
             <h3 className="text-lg font-semibold text-white mb-4">Subscribe</h3>
             <p className="text-gray-400 mb-4">
@@ -68,10 +68,10 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Divider */}
+        
         <div className="border-t border-gray-800 my-8" />
 
-        {/* Legal */}
+       
         <div className="text-center text-gray-400">
           <p>
             &copy; {new Date().getFullYear()} CodeMesh. All rights reserved.

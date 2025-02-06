@@ -21,9 +21,8 @@ const ClientLogin = () => {
     try {
       const response = await axios.post("/api/login/client", formData)
       toast.success("Login successful!")
-      // Assuming the token is returned in the response
       localStorage.setItem("token", response.data.token)
-      navigate("/dashboard")
+      navigate("/developers")
     } catch (error) {
       toast.error("Invalid credentials. Please try again.")
     } finally {
@@ -36,7 +35,7 @@ const ClientLogin = () => {
 
       <div className="relative z-20 w-full max-w-5xl bg-white bg-opacity-90 rounded-3xl shadow-2xl overflow-hidden">
         <div className="md:flex">
-          {/* Left Side - Login Form */}
+          
           <div className="md:w-1/2 p-12">
             <Link
               to="/"

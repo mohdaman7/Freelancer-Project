@@ -44,7 +44,7 @@ const ClientRegister = () => {
 
       <div className="relative z-20 w-full max-w-6xl bg-white bg-opacity-90 rounded-3xl shadow-2xl overflow-hidden">
         <div className="md:flex">
-          {/* Left Side - Information */}
+         
           <div className="md:w-5/12 bg-gradient-to-br from-purple-600 to-blue-600 p-12 text-white flex flex-col justify-between">
             <div>
               <Link
@@ -75,7 +75,7 @@ const ClientRegister = () => {
             </div>
           </div>
 
-          {/* Right Side - Form */}
+         
           <div className="md:w-7/12 p-12">
             <h3 className="text-3xl font-bold text-gray-900 mb-8">Create Your Account</h3>
 

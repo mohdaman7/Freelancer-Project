@@ -9,6 +9,8 @@ const SearchAndFilter = ({ onSearch, onFilterChange }) => {
     hourlyRate: { min: 0, max: 200 },
   });
 
+  console.log(filters,'safdasdf')
+
   const skillsOptions = [
     "JavaScript",
     "React",

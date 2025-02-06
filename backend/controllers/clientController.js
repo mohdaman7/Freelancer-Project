@@ -40,7 +40,7 @@ export const registerClient = async (req, res) => {
 
 
 
-// Login a client
+
 
 
 
@@ -89,7 +89,6 @@ export const loginClient = async (req, res) => {
 
 
 
-// Get client profile
 export const getClientProfile = async (req, res) => {
   const { id } = req.params;
 
@@ -106,18 +105,18 @@ export const getClientProfile = async (req, res) => {
   }
 };
 
-// Create a job
+
 export const createJob = async (req, res) => {
   const { id } = req.params;
   const { title, description, category, budget, deadline } = req.body;
 
   try {
-    // Validate request body (optional: add Joi validation for job creation)
+    
     if (!title || !description || !category || !budget || !deadline) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Create a new job
+    
     const job = new Job({
       title,
       description,

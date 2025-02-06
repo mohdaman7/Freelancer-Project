@@ -5,9 +5,7 @@ import bcrypt from "bcrypt";
 
 
 export const registerDeveloper = async (req, res) => {
-
   try {
-
     const {
       firstName,
       lastName,
@@ -26,20 +24,20 @@ export const registerDeveloper = async (req, res) => {
       status,
     } = req.body;
 
+    
     if (!firstName || !lastName || !email || !password) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    // Check if email is already taken
+    
     const isExistingUser = await Developer.findOne({ email });
     if (isExistingUser) {
       return res.status(400).json({ status: "error", message: "Email already taken!" });
     }
 
-  
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    
+
     const developer = await Developer.create({
       firstName,
       lastName,
@@ -59,10 +57,7 @@ export const registerDeveloper = async (req, res) => {
     });
     await developer.save();
 
-    // Generate JWT token
-    const token = jwt.sign({ id: developer._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-
-    // Send response
+  
     res.status(201).json({
       message: "Developer registered successfully",
       developer: {
@@ -71,7 +66,6 @@ export const registerDeveloper = async (req, res) => {
         email: developer.email,
         title: developer.title,
       },
-      token,
     });
   } catch (error) {
     console.error("Error registering developer:", error);
@@ -80,7 +74,6 @@ export const registerDeveloper = async (req, res) => {
 };
 
 
-// Login Developer
 export const loginDeveloper = async (req, res) => {
   const { email, password } = req.body;
 
@@ -90,16 +83,16 @@ export const loginDeveloper = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Compare passwords
+    
     const isPasswordValid = await bcrypt.compare(password, developer.password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Generate JWT token
+    
     const token = jwt.sign({ id: developer._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-    // Set token in HTTP-only cookie
+  
     res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
 
     // Send response

@@ -16,7 +16,7 @@ import {
   const DeveloperCard = ( developer, isFavorite, onToggleFavorite ) => {
     return (
       <div className="group bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 hover:border-blue-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10">
-        {/* Header Section */}
+        
         <div className="flex items-start space-x-4">
           <div className="relative">
             <img
@@ -51,10 +51,9 @@ import {
           </div>
         </div>
   
-        {/* Bio Section */}
+        
         <p className="text-gray-400 mt-4 line-clamp-2 text-sm">{developer.bio}</p>
   
-        {/* Skills Section */}
         <div className="flex flex-wrap gap-2 mt-4">
           {developer.skills?.slice(0, 4).map((skill, index) => (
             <span key={index} className="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full text-sm font-medium">
@@ -68,7 +67,7 @@ import {
           )}
         </div>
   
-        {/* Stats Grid */}
+        
         <div className="grid grid-cols-2 gap-4 mt-6">
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
@@ -104,7 +103,7 @@ import {
           </div>
         </div>
   
-        {/* Social Links */}
+        
         <div className="flex items-center justify-between mt-6 pt-6 border-t border-gray-700/50">
           <div className="flex space-x-2">
             {developer.githubUrl && (

@@ -17,7 +17,7 @@ const GetStartedPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-4">
-      {/* Decorative background elements */}
+      
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 left-1/4 w-64 h-64 bg-blue-900/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob" />
         <div className="absolute top-0 right-1/4 w-64 h-64 bg-violet-900/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000" />
@@ -32,7 +32,7 @@ const GetStartedPage = () => {
       </div>
 
       <div className="relative w-full max-w-3xl mx-auto grid md:grid-cols-2 gap-6 px-4">
-        {/* Client Card */}
+        
         <div 
           className="group"
           onMouseEnter={() => setIsHovering('client')}
@@ -65,7 +65,7 @@ const GetStartedPage = () => {
           </div>
         </div>
 
-        {/* Freelancer Card */}
+       
         <div 
           className="group"
           onMouseEnter={() => setIsHovering('freelancer')}
@@ -99,7 +99,7 @@ const GetStartedPage = () => {
         </div>
       </div>
 
-      {/* Apply Button */}
+      
       <div className="relative mt-8 w-full max-w-3xl px-4">
         <Link
           to={selectedRole ? `/${selectedRole}-register` : '#'}
@@ -115,7 +115,7 @@ const GetStartedPage = () => {
         </Link>
       </div>
 
-      {/* Login Link */}
+     
       <div className="relative mt-6 text-center">
         <p className="text-gray-300">
           Already have an account?{' '}
