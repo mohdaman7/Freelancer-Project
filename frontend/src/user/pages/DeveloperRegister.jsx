@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import {
   Code,
   Mail,
@@ -8,26 +9,39 @@ import {
   ChevronRight,
   Briefcase,
   X,
-  Github,
-  Linkedin,
   Award,
   Rocket,
   Plus,
+  MapPin,
+  Camera,
+  CircleDollarSign,
+  ChevronDown,
 } from "lucide-react";
+import {toast} from 'sonner'
+import {useNavigate} from 'react-router-dom'
+
 
 const DeveloperRegister = () => {
   const [step, setStep] = useState(0);
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [otherSkill, setOtherSkill] = useState("");
   const [showOtherSkill, setShowOtherSkill] = useState(false);
+  const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate()
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
-    experience: "",
-    github: "",
-    linkedin: "",
+    hourlyRate: "",
+    country: "",
+    profilePhoto: "",
+    experienceLevel: "",
+    // github: "",
+    // linkedin: "",
+    bio: "",
   });
 
   const skills = [
@@ -134,26 +148,68 @@ const DeveloperRegister = () => {
           <div className="grid grid-cols-2 gap-4">
             <div className="relative group">
               <input
-                className="w-full px-4 py-3 bg-gray-800/50 border-2 border-gray-700 rounded-xl focus:outline-none focus:border-blue-500 text-white transition-all pl-12"
-                placeholder="GitHub Profile"
-                value={formData.github}
+                placeholder="Hourly Rate ($)"
+                type="number"
+                className="w-full px-4 py-3 bg-gray-800/50 border-2 border-gray-700 rounded-xl focus:outline-none focus:border-blue-500 text-white transition-all"
+                value={formData.hourlyRate}
                 onChange={(e) =>
-                  setFormData({ ...formData, github: e.target.value })
+                  setFormData({ ...formData, hourlyRate: e.target.value })
                 }
               />
-              <Github className="absolute left-4 top-4 h-5 w-5 text-gray-400 group-focus-within:text-blue-400" />
+              <CircleDollarSign className="absolute right-10 top-3.5 text-gray-400 group-focus-within:text-blue-400" />
             </div>
             <div className="relative group">
               <input
-                className="w-full px-4 py-3 bg-gray-800/50 border-2 border-gray-700 rounded-xl focus:outline-none focus:border-blue-500 text-white transition-all pl-12"
-                placeholder="LinkedIn Profile"
-                value={formData.linkedin}
+                placeholder="Country"
+                className="w-full px-4 py-3 bg-gray-800/50 border-2 border-gray-700 rounded-xl focus:outline-none focus:border-blue-500 text-white transition-all"
+                value={formData.country}
                 onChange={(e) =>
-                  setFormData({ ...formData, linkedin: e.target.value })
+                  setFormData({ ...formData, country: e.target.value })
                 }
               />
-              <Linkedin className="absolute left-4 top-4 h-5 w-5 text-gray-400 group-focus-within:text-blue-400" />
+              <MapPin className="absolute right-3 top-3.5 text-gray-400 group-focus-within:text-blue-400" />
             </div>
+          </div>
+
+          <div className="relative group">
+        <input
+          placeholder="Professional Title (e.g., Full Stack Developer)"
+          className="w-full px-4 py-3 bg-gray-800/50 border-2 border-gray-700 rounded-xl focus:outline-none focus:border-blue-500 text-white transition-all"
+          value={formData.title}
+          onChange={(e) =>
+            setFormData({ ...formData, title: e.target.value })
+          }
+        />
+        <Briefcase className="absolute right-3 top-3.5 text-gray-400 group-focus-within:text-blue-400" />
+      </div>
+
+      {/* Add Experience Level Field */}
+      <div className="relative group">
+        <select
+          className="w-full px-4 py-3 bg-gray-800/50 border-2 border-gray-700 rounded-xl focus:outline-none focus:border-blue-500 text-white appearance-none"
+          value={formData.experienceLevel}
+          onChange={(e) =>
+            setFormData({ ...formData, experienceLevel: e.target.value })
+          }
+        >
+          <option value="">Select Experience Level</option>
+          <option value="Junior">Junior</option>
+          <option value="Mid-Level">Mid-Level</option>
+          <option value="Senior">Senior</option>
+        </select>
+        <ChevronDown className="absolute right-3 top-4 h-5 w-5 text-gray-400" />
+      </div>
+
+          <div className="relative group">
+            <input
+              placeholder="Profile Photo URL"
+              className="w-full px-4 py-3 bg-gray-800/50 border-2 border-gray-700 rounded-xl focus:outline-none focus:border-blue-500 text-white transition-all pl-12"
+              value={formData.profilePhoto}
+              onChange={(e) =>
+                setFormData({ ...formData, profilePhoto: e.target.value })
+              }
+            />
+            <Camera className="absolute left-4 top-4 h-5 w-5 text-gray-400 group-focus-within:text-blue-400" />
           </div>
         </div>
       ),
@@ -244,11 +300,11 @@ const DeveloperRegister = () => {
         <div className="space-y-4 animate-fade-in">
           <div className="relative group">
             <textarea
-              placeholder="Describe your experience, projects, and achievements...\nExample:\n- Built scalable microservices architecture\n- Led team of 5 developers\n- Implemented CI/CD pipeline"
+              placeholder="Describe your experience, projects, and achievements..."
               className="w-full h-48 px-4 py-3 bg-gray-800/50 border-2 border-gray-700 rounded-xl focus:outline-none focus:border-blue-500 text-white resize-none transition-all"
-              value={formData.experience}
+              value={formData.bio}
               onChange={(e) =>
-                setFormData({ ...formData, experience: e.target.value })
+                setFormData({ ...formData, bio: e.target.value })
               }
             />
             <Award className="absolute right-4 top-4 h-5 w-5 text-gray-400 group-focus-within:text-blue-400" />
@@ -262,14 +318,43 @@ const DeveloperRegister = () => {
     setStep((prev) => Math.min(prev + 1, steps.length - 1));
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
-  const handleSubmit = () => {
-    const finalData = {
-      ...formData,
-      skills: selectedSkills.filter((s) => s !== "Other"),
-    };
-    console.log("Submitting:", finalData);
+  const handleSubmit = async () => {
+    try {
+      setIsSubmitting(true);
+      setError(null);
+  
+      const finalData = {
+        ...formData,
+        skills: selectedSkills.filter((s) => s !== "Other").map((skill) => ({
+          name: skill,
+          experience: "Intermediate", // Default experience level
+        })),
+        experienceLevel: formData.experienceLevel,
+        hourlyRate: Number(formData.hourlyRate),
+        status: true,
+        rating: 0,
+        profilePhoto: formData.profilePhoto || "https://via.placeholder.com/150",
+        githubUrl: formData.github,
+        linkedinUrl: formData.linkedin,
+      };
+  
+      const response = await axios.post(
+        "http://localhost:3000/api/developers/register",
+        finalData
+      );
+  
+      if (response.data) {
+        console.log("Registration successful:", response.data);
+        toast.success("Registration successful!");
+        navigate('/')
+      }
+    } catch (error) {
+      setError(error.response?.data?.message || "Registration failed. Please try again.");
+      toast.error("Registration failed. Please check your inputs.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-
   return (
     <div className="min-h-screen bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
@@ -284,6 +369,12 @@ const DeveloperRegister = () => {
         </div>
 
         <div className="bg-gray-800/30 backdrop-blur-lg border-2 border-gray-700/50 rounded-2xl p-8 shadow-2xl">
+          {error && (
+            <div className="mb-4 p-4 bg-red-800/30 text-red-400 rounded-xl border border-red-700/50">
+              {error}
+            </div>
+          )}
+
           <div className="mb-8">
             <div className="flex justify-center gap-4 mb-6">
               {steps.map((_, index) => (
@@ -340,14 +431,26 @@ const DeveloperRegister = () => {
 
             <button
               onClick={step === steps.length - 1 ? handleSubmit : nextStep}
-              disabled={step === 1 && selectedSkills.length < 3}
+              disabled={
+                (step === 0 && (
+                  !formData.firstName ||
+                  !formData.lastName ||
+                  !formData.email ||
+                  !formData.password ||
+                  !formData.hourlyRate ||
+                  !formData.country
+                )) ||
+                (step === 1 && selectedSkills.length < 3) ||
+                (step === 2 && !formData.bio) ||
+                isSubmitting
+              }
               className={`px-6 py-2.5 rounded-lg flex items-center gap-2 transition-all ${
                 step === 1 && selectedSkills.length < 3
                   ? "opacity-50 cursor-not-allowed"
                   : "bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700 text-white shadow-lg"
               }`}
             >
-              {step === steps.length - 1 ? "Complete Profile" : "Next Step"}
+              {isSubmitting ? "Submitting..." : step === steps.length - 1 ? "Complete Profile" : "Next Step"}
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>

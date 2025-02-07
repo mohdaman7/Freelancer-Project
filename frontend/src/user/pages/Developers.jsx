@@ -34,7 +34,7 @@ const Developers = () => {
     const fetchDevelopers = async () => {
       try {
         setIsLoading(true)
-        const { data } = await axios.get("http://localhost:3000/api/developer/profile")
+        const { data } = await axios.get("http://localhost:3000/api/developers/profile")
         if (data.status === "success") {
           setDevelopers(data.data)
         } else {
@@ -198,7 +198,7 @@ const Developers = () => {
               ))}
             </div>
 
-            {/* Pagination */}
+           
             <div className="flex justify-center mt-12">
               <nav className="flex items-center space-x-2">
                 <button

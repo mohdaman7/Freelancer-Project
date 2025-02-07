@@ -10,11 +10,11 @@ import { authenticateUser } from "../middlewares/userMiddleware.js";
 const router = express.Router();
 
 
-router.post("/register", registerClient); // Register a new client
-router.post("/login", loginClient); // Login client
+router.post("/register", registerClient); 
+router.post("/login", loginClient); 
 
 
-router.get("/profile/:id", authenticateUser, getClientProfile); // Get client profile
-router.post("/create-job/:id", authenticateUser, createJob); // Create a job
+router.get("/profile/:id", authenticateUser, getClientProfile); 
+router.post("/create-job/:id", authenticateUser, createJob); 
 
 export default router;

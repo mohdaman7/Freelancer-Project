@@ -15,24 +15,25 @@ const developerSchema = new mongoose.Schema(
         experience: {
           type: String,
           enum: ["Beginner", "Intermediate", "Expert"],
-          required: true
+          required: true,
         },
       },
     ],
     experienceLevel: {
       type: String,
       enum: ["Junior", "Mid-Level", "Senior"],
-      required: true
+      required: true,
     },
     githubUrl: { type: String },
     linkedinUrl: { type: String },
-    profilePhoto: { type: String }, 
+    profilePhoto: { type: String },
     bio: { type: String },
     rating: { type: Number },
-    status: { type: Boolean, default: false } 
+    status: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
+
 
 const Developer = mongoose.model("Developer", developerSchema);
 export default Developer;
