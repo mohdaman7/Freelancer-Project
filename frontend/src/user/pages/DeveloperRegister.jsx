@@ -45,16 +45,16 @@ const DeveloperRegister = () => {
   });
 
   const skills = [
-    { name: "React", color: "from-blue-500 to-blue-600" },
-    { name: "Node.js", color: "from-green-500 to-green-600" },
-    { name: "Python", color: "from-yellow-500 to-yellow-600" },
-    { name: "TypeScript", color: "from-blue-600 to-blue-700" },
-    { name: "AWS", color: "from-orange-500 to-orange-600" },
-    { name: "JavaScript", color: "from-blue-400 to-blue-500" },
-    { name: "Express", color: "from-pink-500 to-pink-600" },
-    { name: "Flutter", color: "from-blue-300 to-blue-400" },
-    { name: "Angular", color: "from-amber-500 to-amber-600" },
-    { name: "Redis", color: "from-red-500 to-red-600" },
+    { name: "React" },
+    { name: "Node.js" },
+    { name: "Python" },
+    { name: "TypeScript" },
+    { name: "AWS" },
+    { name: "JavaScript" },
+    { name: "Express" },
+    { name: "Flutter" },
+    { name: "Angular" },
+    { name: "Redis" },
   ];
 
   const handleSkillToggle = (skill) => {
@@ -183,7 +183,7 @@ const DeveloperRegister = () => {
         <Briefcase className="absolute right-3 top-3.5 text-gray-400 group-focus-within:text-blue-400" />
       </div>
 
-      {/* Add Experience Level Field */}
+  
       <div className="relative group">
         <select
           className="w-full px-4 py-3 bg-gray-800/50 border-2 border-gray-700 rounded-xl focus:outline-none focus:border-blue-500 text-white appearance-none"
@@ -220,35 +220,35 @@ const DeveloperRegister = () => {
       icon: <Code className="w-5 h-5" />,
       content: (
         <div className="space-y-6 animate-fade-in">
-          <div className="flex flex-wrap gap-3">
-            {skills.map((skill) => (
-              <button
-                key={skill.name}
-                onClick={() => handleSkillToggle(skill.name)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-300 transform hover:scale-105 ${
-                  selectedSkills.includes(skill.name)
-                    ? `bg-gradient-to-r ${skill.color} text-white shadow-lg`
-                    : "bg-gray-800/50 border-2 border-gray-700 text-gray-300 hover:border-blue-500"
-                }`}
-              >
-                <span>{skill.name}</span>
-                {selectedSkills.includes(skill.name) && (
-                  <div className="w-2 h-2 bg-white rounded-full" />
-                )}
-              </button>
-            ))}
-            <button
-              onClick={() => handleSkillToggle("Other")}
-              className={`px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-300 transform hover:scale-105 ${
-                selectedSkills.includes("Other")
-                  ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
-                  : "bg-gray-800/50 border-2 border-gray-700 text-gray-300 hover:border-blue-500"
-              }`}
-            >
-              <Plus className="w-4 h-4" />
-              Other
-            </button>
-          </div>
+           <div className="flex flex-wrap gap-3">
+        {skills.map((skill) => (
+          <button
+            key={skill.name}
+            onClick={() => handleSkillToggle(skill.name)}
+            className={`px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-300 transform hover:scale-105 ${
+              selectedSkills.includes(skill.name)
+                ? "bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-lg" 
+                : "bg-gray-800/50 border-2 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-blue-500" 
+            }`}
+          >
+            <span>{skill.name}</span>
+            {selectedSkills.includes(skill.name) && (
+              <div className="w-2 h-2 bg-white rounded-full" />
+            )}
+          </button>
+        ))}
+        <button
+          onClick={() => handleSkillToggle("Other")}
+          className={`px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all duration-300 transform hover:scale-105 ${
+            selectedSkills.includes("Other")
+              ? "bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-lg" 
+              : "bg-gray-800/50 border-2 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-blue-500" 
+          }`}
+        >
+          <Plus className="w-4 h-4" />
+          Other
+        </button>
+      </div>
 
           {showOtherSkill && (
             <div className="flex gap-2">
@@ -346,7 +346,7 @@ const DeveloperRegister = () => {
       if (response.data) {
         console.log("Registration successful:", response.data);
         toast.success("Registration successful!");
-        navigate('/')
+        navigate('/freelancer-login')
       }
     } catch (error) {
       setError(error.response?.data?.message || "Registration failed. Please try again.");

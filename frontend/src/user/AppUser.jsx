@@ -5,6 +5,7 @@ import ClientRegister from './pages/ClientRegister';
 import ClientLogin from './pages/ClientLogin';
 import DeveloperRegister from './pages/DeveloperRegister';
 import Developers from './pages/Developers';
+import DeveloperLogin from './pages/DeveloperLogin';
 
 const AppUser = () => {
   return (
@@ -15,6 +16,7 @@ const AppUser = () => {
         <Route path='/client-login' element={<ClientLogin/>}/>
         <Route path='/freelancer-register' element={<DeveloperRegister/>}/>
         <Route path='/developers' element={<Developers/>}/>
+        <Route path='/freelancer-login' element={<DeveloperLogin/>}/>
     </Routes>
   )
 }
