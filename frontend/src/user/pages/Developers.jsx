@@ -19,6 +19,7 @@ import SearchAndFilter from "../components/SearchAndFillter";
 import ClientReviews from "../components/ClientReviews";
 import JobPostBanner from "../components/JobPostBanner";
 import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
 
 const Developers = () => {
   const [developers, setDevelopers] = useState([])
@@ -29,6 +30,8 @@ const Developers = () => {
   const [error, setError] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
   const developersPerPage = 6
+
+  console.log(developers,'deve')
 
   useEffect(() => {
     const fetchDevelopers = async () => {
@@ -42,6 +45,7 @@ const Developers = () => {
         }
       } catch (err) {
         setError("An error occurred while fetching developers")
+        console.log(err)
       } finally {
         setIsLoading(false)
       }
@@ -72,10 +76,10 @@ const Developers = () => {
             </h1>
             <p className="text-xl text-gray-400">Connect with extraordinary developers for your next big project</p>
           </div>
-          <button className="mt-6 md:mt-0 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-bold py-3 px-8 rounded-full transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg flex items-center">
+          <Link to='/post-job' className="mt-6 md:mt-0 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-bold py-3 px-8 rounded-full transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg flex items-center">
             <Zap className="w-5 h-5 mr-2" />
             Post a Job
-          </button>
+          </Link>
         </div>
 
         <SearchAndFilter
@@ -154,7 +158,7 @@ const Developers = () => {
                     </div>
                     <div className="flex items-center text-gray-400">
                       <Award className="w-5 h-5 mr-2 text-cyan-500" />
-                      <span>{developer.experience?.experience}</span>
+                      <span>{developer.experienceLevel}</span>
                     </div>
                     <div className="flex items-center text-gray-400">
                       <Users className="w-5 h-5 mr-2 text-cyan-500" />

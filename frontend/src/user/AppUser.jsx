@@ -6,6 +6,7 @@ import ClientLogin from './pages/ClientLogin';
 import DeveloperRegister from './pages/DeveloperRegister';
 import Developers from './pages/Developers';
 import DeveloperLogin from './pages/DeveloperLogin';
+import PostJob from './components/PostJob';
 
 const AppUser = () => {
   return (
@@ -17,6 +18,7 @@ const AppUser = () => {
         <Route path='/freelancer-register' element={<DeveloperRegister/>}/>
         <Route path='/developers' element={<Developers/>}/>
         <Route path='/freelancer-login' element={<DeveloperLogin/>}/>
+        <Route path='/post-job' element={<PostJob/>}/>
     </Routes>
   )
 }
