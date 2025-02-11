@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { Zap, Calendar, DollarSign, Send, Briefcase, Clock, Code } from "lucide-react";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { 
+  Zap, Calendar, DollarSign, Send, Briefcase, 
+  Clock, Code, Users, Trophy, Target, 
+  CheckCircle, TrendingUp, Globe 
+} from "lucide-react";
 
 export default function PostJob() {
   const [jobData, setJobData] = useState({
@@ -25,39 +28,47 @@ export default function PostJob() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-blue-900 flex items-center justify-center">
-            <Briefcase className="w-10 h-10 mr-3 text-blue-600" />
-            Post a New Job
-          </h1>
-          <p className="mt-3 text-lg text-blue-600">
-            Find the perfect developer for your next project
-          </p>
-        </div>
-
-        <Card className="backdrop-blur-sm bg-white/90 shadow-xl">
-          <CardHeader className="bg-gradient-to-r from-blue-600 to-cyan-500 p-8 rounded-t-lg">
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2 text-blue-50">
-                <Clock className="w-5 h-5" />
-                <span>Quick and easy job posting process</span>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-purple-100">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-r from-purple-600 to-indigo-500 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center text-white">
+            <h1 className="text-5xl font-bold mb-6">
+              Find Your Perfect Developer
+            </h1>
+            <p className="text-xl text-purple-100 mb-8">
+              Post your job and connect with top-tier tech talent from around the world
+            </p>
+            <div className="flex justify-center space-x-8 text-purple-100">
+              <div className="flex items-center">
+                <Users className="w-6 h-6 mr-2" />
+                <span>50k+ Developers</span>
               </div>
-              <div className="flex items-center space-x-2 text-blue-50">
-                <Code className="w-5 h-5" />
-                <span>Access to top developer talent</span>
+              <div className="flex items-center">
+                <Trophy className="w-6 h-6 mr-2" />
+                <span>98% Success Rate</span>
               </div>
-              <div className="flex items-center space-x-2 text-blue-50">
-                <Zap className="w-5 h-5" />
-                <span>Fast response from qualified candidates</span>
+              <div className="flex items-center">
+                <Globe className="w-6 h-6 mr-2" />
+                <span>Global Talent Pool</span>
               </div>
             </div>
-          </CardHeader>
+          </div>
+        </div>
+      </div>
 
-          <CardContent className="p-8">
-            <form onSubmit={handleSubmit} className="space-y-8">
-              <div className="space-y-6">
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Form Section */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-2xl shadow-xl p-8">
+              <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+                <Briefcase className="w-8 h-8 mr-3 text-purple-600" />
+                Post Your Job
+              </h2>
+              
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label htmlFor="title" className="block text-lg font-semibold text-gray-700 mb-2">
                     Job Title
@@ -69,7 +80,7 @@ export default function PostJob() {
                     placeholder="e.g. Senior Full Stack Developer for E-commerce Platform"
                     value={jobData.title}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
                     required
                   />
                 </div>
@@ -85,7 +96,7 @@ export default function PostJob() {
                     placeholder="Provide a detailed description of the project requirements, responsibilities, and expectations..."
                     value={jobData.description}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
                     required
                   />
                 </div>
@@ -101,7 +112,7 @@ export default function PostJob() {
                     placeholder="e.g. React, Node.js, AWS, MongoDB"
                     value={jobData.skillsRequired}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
                     required
                   />
                 </div>
@@ -122,7 +133,7 @@ export default function PostJob() {
                         placeholder="Enter your budget"
                         value={jobData.budget}
                         onChange={handleChange}
-                        className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                        className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
                         required
                       />
                     </div>
@@ -142,28 +153,114 @@ export default function PostJob() {
                         id="deadline"
                         value={jobData.deadline}
                         onChange={handleChange}
-                        className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                        className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
                         required
                       />
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="pt-6">
                 <button
                   type="submit"
-                  className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold rounded-lg 
-                    hover:from-blue-700 hover:to-cyan-600 transition duration-300 ease-in-out transform hover:scale-105 
-                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center space-x-2"
+                  className="w-full px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-500 text-white font-bold rounded-lg 
+                    hover:from-purple-700 hover:to-indigo-600 transition duration-300 ease-in-out transform hover:scale-105 
+                    focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 flex items-center justify-center space-x-2"
                 >
                   <Send className="w-5 h-5" />
                   <span>Post Your Job</span>
                 </button>
+              </form>
+            </div>
+          </div>
+
+          {/* Sidebar Content */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Why Choose Us */}
+            <div className="bg-white rounded-2xl shadow-xl p-6">
+              <h3 className="text-xl font-bold text-gray-800 mb-4">Why Choose Us</h3>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="w-6 h-6 text-emerald-500 flex-shrink-0" />
+                  <div>
+                    <h4 className="font-semibold">Verified Developers</h4>
+                    <p className="text-gray-600">All developers are pre-vetted and skill-tested</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <Clock className="w-6 h-6 text-indigo-500 flex-shrink-0" />
+                  <div>
+                    <h4 className="font-semibold">Quick Matching</h4>
+                    <p className="text-gray-600">Get matched with developers within 48 hours</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <Target className="w-6 h-6 text-pink-500 flex-shrink-0" />
+                  <div>
+                    <h4 className="font-semibold">Perfect Match</h4>
+                    <p className="text-gray-600">AI-powered matching for your specific needs</p>
+                  </div>
+                </div>
               </div>
-            </form>
-          </CardContent>
-        </Card>
+            </div>
+
+            {/* Statistics */}
+            <div className="bg-gradient-to-br from-purple-600 to-indigo-500 rounded-2xl shadow-xl p-6 text-white">
+              <h3 className="text-xl font-bold mb-4">Platform Statistics</h3>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span>Active Developers</span>
+                  <span className="font-bold">50,000+</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Projects Completed</span>
+                  <span className="font-bold">125,000+</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Average Response Time</span>
+                  <span className="font-bold">4 Hours</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Client Satisfaction</span>
+                  <span className="font-bold">98%</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Growth Chart */}
+            <div className="bg-white rounded-2xl shadow-xl p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-gray-800">Platform Growth</h3>
+                <TrendingUp className="w-6 h-6 text-emerald-500" />
+              </div>
+              <p className="text-gray-600">
+                Join our rapidly growing platform with over 5,000 new developers and 1,000 new projects monthly.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer Section */}
+      <div className="bg-gray-50 py-12 mt-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div>
+              <Users className="w-8 h-8 text-purple-600 mx-auto mb-4" />
+              <h4 className="text-xl font-bold text-gray-800 mb-2">Global Community</h4>
+              <p className="text-gray-600">Connect with developers from over 150 countries</p>
+            </div>
+            <div>
+              <Zap className="w-8 h-8 text-purple-600 mx-auto mb-4" />
+              <h4 className="text-xl font-bold text-gray-800 mb-2">Fast Hiring</h4>
+              <p className="text-gray-600">Hire within days, not weeks or months</p>
+            </div>
+            <div>
+              <Code className="w-8 h-8 text-purple-600 mx-auto mb-4" />
+              <h4 className="text-xl font-bold text-gray-800 mb-2">Quality Work</h4>
+              <p className="text-gray-600">Get high-quality work from skilled developers</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
