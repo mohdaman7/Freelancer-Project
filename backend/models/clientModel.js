@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 const clientSchema = new mongoose.Schema({
-
   name: { type: String, require: true },
 
   email: { type: String, require: true, unique: true },
@@ -10,13 +9,19 @@ const clientSchema = new mongoose.Schema({
 
   company: { type: String },
 
+  role: {
+    type: String,
+    enum: ["client"],
+    default: "client", 
+    required: true,
+  },
+
   projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
 
   balance: { type: Number, default: 0 },
 
   createAt: { type: Date, default: Date.now },
-
 });
 
 const Client = mongoose.model("Client", clientSchema);
-export default Client
+export default Client;

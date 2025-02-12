@@ -3,7 +3,6 @@ import {
   registerClient,
   loginClient,
   getClientProfile,
-  createJob,
 } from "../controllers/clientController.js";
 import { authenticateUser } from "../middlewares/userMiddleware.js";
 
@@ -14,7 +13,7 @@ router.post("/register", registerClient);
 router.post("/login", loginClient); 
 
 
-router.get("/profile/:id", authenticateUser, getClientProfile); 
-router.post("/create-job/:id", authenticateUser, createJob); 
+router.get("/profile/:id", authenticateUser(['client']), getClientProfile); 
+
 
 export default router;

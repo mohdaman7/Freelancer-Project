@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url';
 import adminRoute from './routes/adminRoute.js';
 import clientRoute from './routes/clientRoute.js';
 import developerRoute from './routes/developerRoute.js';
-
+import jobRoute from './routes/JobRoute.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,6 +31,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/admin", adminRoute);
 app.use("/api/client", clientRoute);
 app.use("/api/developers", developerRoute); 
+app.use("/api/jobs", jobRoute);
+
 
 
 if (process.env.NODE_ENV === 'production') {

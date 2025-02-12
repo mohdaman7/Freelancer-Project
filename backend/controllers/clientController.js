@@ -106,30 +106,3 @@ export const getClientProfile = async (req, res) => {
 };
 
 
-export const createJob = async (req, res) => {
-  const { id } = req.params;
-  const { title, description, category, budget, deadline } = req.body;
-
-  try {
-    
-    if (!title || !description || !category || !budget || !deadline) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
-    
-    const job = new Job({
-      title,
-      description,
-      category,
-      budget,
-      deadline,
-      clientId: id,
-    });
-    await job.save();
-
-    res.status(201).json({ message: "Job created successfully", job });
-  } catch (error) {
-    console.error("Error creating job:", error);
-    res.status(500).json({ message: "Error creating job", error: error.message });
-  }
-};

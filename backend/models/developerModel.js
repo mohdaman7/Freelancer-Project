@@ -6,6 +6,12 @@ const developerSchema = new mongoose.Schema(
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    role: {
+      type: String,
+      enum: ["developer"],
+      default: "developer", 
+      required: true
+    },
     title: { type: String, required: true },
     hourlyRate: { type: Number, required: true },
     country: { type: String, required: true },
