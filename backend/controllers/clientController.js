@@ -24,7 +24,7 @@ export const registerClient = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log("Hashed Password (Before Saving):", hashedPassword);
 
-    const client = new Client({ name, email, password: hashedPassword, company });
+    const client = new Client({ name, email, password: hashedPassword, company,role: "client" });
     await client.save();
 
     res.status(201).json({
@@ -70,7 +70,16 @@ export const loginClient = async (req, res) => {
       return res.status(401).json({ status: "error", message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ id: client._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(
+      {
+        id: client._id,
+        email: client.email,
+        role: client.role 
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
 
     res.cookie("token", token, { httpOnly: true, secure: true });
 

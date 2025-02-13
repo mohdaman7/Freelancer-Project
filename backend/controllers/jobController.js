@@ -4,7 +4,7 @@ import Job from "../models/jobModel.js";
 export const createJob = async (req, res) => {
   try {
     // Get client ID from authenticated user
-    const clientId = req.user._id;
+    const clientId = req.user.id;
 
     // Convert skillsRequired string to array
     const skillsArray = req.body.skillsRequired

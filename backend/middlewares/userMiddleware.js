@@ -12,10 +12,13 @@ export const authenticateUser = (allowedRoles) => {
         return res.status(403).json({ message: "Access denied. No token provided." });
       }
 
+      console.log(authHeader,'tokennn')
+      
       const token = authHeader.split(" ")[1];
       if (!token) {
         return res.status(403).json({ message: "Invalid token format." });
       }
+
 
       // Verify token
       jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {

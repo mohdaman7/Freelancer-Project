@@ -6,7 +6,16 @@ import { Toaster } from "sonner";
 function App() {
   return (
     <Router>
-      <Toaster richColors position="bottom-right" />
+      <Toaster  position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark" />
       <Routes>
         <Route path="/admin/*" element={<AppAdmin />} />
         <Route path="/*" element={<AppUser />} />

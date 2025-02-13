@@ -4,6 +4,8 @@ import {
   Clock, Code, Users, Trophy, Target, 
   CheckCircle, TrendingUp, Globe 
 } from "lucide-react";
+import axios from "axios";
+import { toast } from "sonner";
 
 export default function PostJob() {
   const [jobData, setJobData] = useState({
@@ -13,6 +15,7 @@ export default function PostJob() {
     budget: "",
     deadline: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,13 +25,74 @@ export default function PostJob() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Job Data:", jobData);
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("Please login to post a job");
+        return;
+      }
+
+      // Validate required fields
+      if (!jobData.title || !jobData.description || !jobData.skillsRequired || !jobData.budget || !jobData.deadline) {
+        toast.error("Please fill out all required fields");
+        return;
+      }
+
+      // Validate budget
+      if (jobData.budget < 100) {
+        toast.error("Budget must be at least $100");
+        return;
+      }
+
+      // Validate deadline
+      const today = new Date().toISOString().split("T")[0];
+      if (jobData.deadline < today) {
+        toast.error("Deadline must be in the future");
+        return;
+      }
+
+      // Send POST request to backend
+      const response = await axios.post(
+        "http://localhost:3000/api/jobs/create-job",
+        {
+          ...jobData,
+          skillsRequired: jobData.skillsRequired.split(",").map(skill => skill.trim()),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.status === "success") {
+        toast.success("Job posted successfully!");
+        // Reset form
+        setJobData({
+          title: "",
+          description: "",
+          skillsRequired: "",
+          budget: "",
+          deadline: "",
+        });
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "Failed to post job";
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-900">
+      
+
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-blue-600 to-violet-600 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -67,8 +131,9 @@ export default function PostJob() {
                 <Briefcase className="w-8 h-8 mr-3 text-blue-400" />
                 Post Your Job
               </h2>
-              
+
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Job Title */}
                 <div>
                   <label htmlFor="title" className="block text-lg font-semibold text-gray-300 mb-2">
                     Job Title
@@ -85,6 +150,7 @@ export default function PostJob() {
                   />
                 </div>
 
+                {/* Job Description */}
                 <div>
                   <label htmlFor="description" className="block text-lg font-semibold text-gray-300 mb-2">
                     Job Description
@@ -101,6 +167,7 @@ export default function PostJob() {
                   />
                 </div>
 
+                {/* Required Skills */}
                 <div>
                   <label htmlFor="skillsRequired" className="block text-lg font-semibold text-gray-300 mb-2">
                     Required Skills
@@ -117,7 +184,9 @@ export default function PostJob() {
                   />
                 </div>
 
+                {/* Budget and Deadline */}
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  {/* Budget */}
                   <div>
                     <label htmlFor="budget" className="block text-lg font-semibold text-gray-300 mb-2">
                       Budget Range
@@ -135,10 +204,12 @@ export default function PostJob() {
                         onChange={handleChange}
                         className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-700 bg-gray-900 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
                         required
+                        min="100"
                       />
                     </div>
                   </div>
 
+                  {/* Deadline */}
                   <div>
                     <label htmlFor="deadline" className="block text-lg font-semibold text-gray-300 mb-2">
                       Project Deadline
@@ -155,19 +226,35 @@ export default function PostJob() {
                         onChange={handleChange}
                         className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-700 bg-gray-900 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
                         required
+                        min={new Date().toISOString().split("T")[0]}
                       />
                     </div>
                   </div>
                 </div>
 
+                {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full px-8 py-4 bg-gradient-to-r from-blue-600 to-violet-600 text-white font-bold rounded-lg 
+                  disabled={loading}
+                  className={`w-full px-8 py-4 bg-gradient-to-r from-blue-600 to-violet-600 text-white font-bold rounded-lg 
                     hover:from-blue-700 hover:to-violet-700 transition duration-300 ease-in-out transform hover:scale-105 
-                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center space-x-2"
+                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center space-x-2
+                    ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
-                  <Send className="w-5 h-5" />
-                  <span>Post Your Job</span>
+                  {loading ? (
+                    <span className="flex items-center">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Posting...
+                    </span>
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5" />
+                      <span>Post Your Job</span>
+                    </>
+                  )}
                 </button>
               </form>
             </div>

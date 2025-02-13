@@ -18,4 +18,4 @@ router.get("/job/:id", getJobById);
 router.post("/create-job", authenticateUser(['client']), createJob);
 router.put("/job/:id/status", authenticateUser(['client']), updateJobStatus);
 
-export default router;
+export default router;                      
