@@ -77,7 +77,7 @@ export const loginClient = async (req, res) => {
         role: client.role 
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "4h" }
     );
 
 

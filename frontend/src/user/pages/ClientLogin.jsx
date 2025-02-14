@@ -22,6 +22,7 @@ const ClientLogin = () => {
       const response = await axios.post("http://localhost:3000/api/client/login", formData)
       toast.success("Login successful!")
       localStorage.setItem("token", response.data.token)
+      localStorage.setItem('role', 'client');
       navigate("/developers")
     } catch (error) {
       toast.error("Invalid credentials. Please try again.")

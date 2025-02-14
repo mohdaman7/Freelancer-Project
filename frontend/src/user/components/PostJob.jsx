@@ -28,39 +28,22 @@ export default function PostJob() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+  
     try {
       const token = localStorage.getItem("token");
       if (!token) {
         toast.error("Please login to post a job");
         return;
       }
-
-      // Validate required fields
-      if (!jobData.title || !jobData.description || !jobData.skillsRequired || !jobData.budget || !jobData.deadline) {
-        toast.error("Please fill out all required fields");
-        return;
-      }
-
-      // Validate budget
-      if (jobData.budget < 100) {
-        toast.error("Budget must be at least $100");
-        return;
-      }
-
-      // Validate deadline
-      const today = new Date().toISOString().split("T")[0];
-      if (jobData.deadline < today) {
-        toast.error("Deadline must be in the future");
-        return;
-      }
-
-      // Send POST request to backend
+  
+      // Ensure skillsRequired is a string
+      const skillsRequiredString = jobData.skillsRequired.toString();
+  
       const response = await axios.post(
         "http://localhost:3000/api/jobs/create-job",
         {
           ...jobData,
-          skillsRequired: jobData.skillsRequired.split(",").map(skill => skill.trim()),
+          skillsRequired: skillsRequiredString, // Send as string
         },
         {
           headers: {
@@ -69,10 +52,9 @@ export default function PostJob() {
           },
         }
       );
-
+  
       if (response.data.status === "success") {
         toast.success("Job posted successfully!");
-        // Reset form
         setJobData({
           title: "",
           description: "",

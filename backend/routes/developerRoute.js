@@ -9,7 +9,7 @@ router.post('/register', validateDeveloper, registerDeveloper);
 router.post('/login', loginDeveloper);
 
 
-router.get('/profile', authenticateUser(['developer']), getDeveloperProfile);
+router.get('/profile', authenticateUser(['client', 'developer']), getDeveloperProfile);
 router.put('/profile/:id', authenticateUser(['developer']), getDeveloperProfileById);
 router.post('/services/:id', authenticateUser(['developer']), addService);
 
