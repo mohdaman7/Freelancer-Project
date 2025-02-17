@@ -38,8 +38,8 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link to="/find-developers" className="text-gray-300 hover:text-white">Find Developers</Link>
-              <Link to="/post-project" className="text-gray-300 hover:text-white">Post Project</Link>
+              <Link to="/developers" className="text-gray-300 hover:text-white">Find Developers</Link>
+              <Link to="/post-job" className="text-gray-300 hover:text-white">Post Project</Link>
               <Link to="/dashboard" className="text-gray-300 hover:text-white">Dashboard</Link>
             </>
           )}
