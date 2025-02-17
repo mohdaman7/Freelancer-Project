@@ -1,7 +1,9 @@
 import Client from "../models/clientModel.js";
+import Job from "../models/jobModel.js";
 import { ClientRegisterJoi, ClientLoginJoi } from "../validation/Clientauthjoi.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+
 
 
 
@@ -97,21 +99,76 @@ export const loginClient = async (req, res) => {
 
 
 
-
 export const getClientProfile = async (req, res) => {
-  const { id } = req.params;
-
+  const clientId = req.user.id; 
   try {
-    const client = await Client.findById(id).select("-password"); // Exclude password
+    const client = await Client.findById(clientId).select("-password"); 
     if (!client) {
       return res.status(404).json({ message: "Client not found" });
     }
-
     res.status(200).json(client);
   } catch (error) {
     console.error("Error fetching client profile:", error);
     res.status(500).json({ message: "Error fetching client profile", error: error.message });
   }
 };
+
+
+
+export const updateClientBalance = async (req,res) => {
+  try{
+    const client = await Client.findById(req.user.id);
+
+    if(!client) {
+      return res.status(404).json({message: "Client not found"});
+    }
+
+    client.balance += req.body.amount;
+    await client.save();
+
+    res.status(200).json({
+      status:"success",
+      data:{balance:client.balance}
+    })
+
+  }catch(error){
+    res.stauts(500).json({
+      status:"error",
+      message:"Error updating balance",
+      error: error.message
+    })
+  }
+}
+
+
+export const getClientStats = async (req,res) => {
+  try{
+    const clientId = req.user.id;
+
+    const jobs = await Job.find({clientId});
+
+    const completedProjects = jobs.filter(job => job.status === 'Completed').length;
+    const activeProjects = jobs.filter(job => job.stauts === 'In Progress').length;
+    const totalSpent = jobs.reduce((sum,job) => sum + (job.budget || 0),0);
+    const avgRating = jobs.reduce((sum,job) => sum + (job.rating || 0),0) / jobs.length || 0;
+
+    res.status(200).json({
+      stauts: "success",
+      data: {
+        completedProjects,
+        activeProjects,
+        totalSpent,
+        avgRating:avgRating.toFixed(1),
+      },
+    })
+
+  }catch(error){
+    res.status(500).json({
+      status:"error",
+      message: "Error fatching client stats",
+      error: error.message,
+    })
+  }
+}
 
 

@@ -45,6 +45,14 @@ const jobSchema = new mongoose.Schema(
         enum: ["Open", "In Progress", "Completed", "Closed"],
         default: "Open",
       },
+      rating: {
+        type: Number,
+        min: 0,
+        max: 5,
+        default: 0,
+      },
+
+      
     },
     { timestamps: true }
 );

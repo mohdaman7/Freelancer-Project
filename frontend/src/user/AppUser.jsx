@@ -9,6 +9,7 @@ import DeveloperLogin from './pages/DeveloperLogin';
 import PostJob from './components/PostJob';
 import FindWorkPage from './pages/FindWork';
 import JobDetailsPage from './components/JobDetails';
+import ClientDashboard from './pages/ClientDashboard';
 
 const AppUser = () => {
   return (
@@ -23,6 +24,7 @@ const AppUser = () => {
         <Route path='/post-job' element={<PostJob/>}/>
         <Route path='/find-work' element={<FindWorkPage/>}/>
         <Route path='/find-work/:id' element={<JobDetailsPage/>}/>
+        <Route path='/client-dashboard' element={<ClientDashboard/>}/>
     </Routes>
   )
 }
