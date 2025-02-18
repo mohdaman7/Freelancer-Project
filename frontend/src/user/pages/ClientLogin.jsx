@@ -23,7 +23,7 @@ const ClientLogin = () => {
       toast.success("Login successful!")
       localStorage.setItem("token", response.data.token)
       localStorage.setItem('role', 'client');
-      navigate("/developers")
+      navigate("/")
     } catch (error) {
       toast.error("Invalid credentials. Please try again.")
     } finally {

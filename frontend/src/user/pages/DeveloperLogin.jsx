@@ -25,7 +25,7 @@ const DeveloperLogin = () => {
       if (response.data) {
         toast.success("Login successful!");
         localStorage.setItem("token", response.data.token)
-        localStorage.setItem('role', 'client');
+        localStorage.setItem('role', 'developer');
         navigate("/");
       }
     } catch (error) {

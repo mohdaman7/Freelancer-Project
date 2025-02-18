@@ -9,8 +9,9 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
+    localStorage.clear()
     navigate('/');
-    window.location.reload(); // Force refresh to update navbar state
+    window.location.reload(); 
   };
 
   return (
@@ -33,7 +34,7 @@ const Navbar = () => {
           ) : role === 'developer' ? (
             <>
               <Link to="/find-work" className="text-gray-300 hover:text-white">Find Work</Link>
-              <Link to="/earnings" className="text-gray-300 hover:text-white">Earnings</Link>
+              <Link to="/freelancer-earnings" className="text-gray-300 hover:text-white">Earnings</Link>
               <Link to="/my-projects" className="text-gray-300 hover:text-white">My Projects</Link>
             </>
           ) : (
@@ -45,7 +46,7 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Desktop Auth Buttons */}
+     
         <div className="flex gap-4">
           {!token ? (
             <>
