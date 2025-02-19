@@ -51,6 +51,17 @@ const jobSchema = new mongoose.Schema(
         max: 5,
         default: 0,
       },
+      earnings: {
+    total: { type: Number, default: 0 },
+    available: { type: Number, default: 0 },
+    pending: { type: Number, default: 0 }
+  },
+  transactions: [{
+    date: { type: Date, default: Date.now },
+    description: String,
+    amount: Number,
+    status: { type: String, enum: ['Pending', 'Completed', 'Failed'], default: 'Pending' }
+  }]
 
       
     },

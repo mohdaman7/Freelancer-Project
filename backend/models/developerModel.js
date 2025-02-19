@@ -36,6 +36,21 @@ const developerSchema = new mongoose.Schema(
     bio: { type: String },
     rating: { type: Number },
     status: { type: Boolean, default: false },
+    earnings: {
+      total: { type: Number, default: 0 },
+      available: { type: Number, default: 0 },
+      pending: { type: Number, default: 0 }
+    },
+    transactions: [{
+      date: { type: Date, default: Date.now },
+      description: String,
+      amount: Number,
+      status: { type: String, enum: ['Pending', 'Completed', 'Failed'], default: 'Pending' }
+    }],
+    earningsHistory: [{
+      month: String,
+      amount: Number
+    }],
   },
   { timestamps: true }
 );

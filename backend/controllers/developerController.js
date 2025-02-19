@@ -95,7 +95,6 @@ export const loginDeveloper = async (req, res) => {
   
     res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
 
-    // Send response
     res.status(200).json({
       message: "Login successful",
       developer: {
@@ -157,12 +156,11 @@ export const getDeveloperProfile = async (req, res) => {
   }
 };
 
-// Get Developer Profile by ID
+
 export const getDeveloperProfileById = async (req, res) => {
   const { id } = req.params;
-
   try {
-    // Fetch developer by ID, excluding sensitive data
+    
     const developer = await Developer.findById(id)
       .select("-password -__v -createdAt -updatedAt");
 
@@ -173,7 +171,6 @@ export const getDeveloperProfileById = async (req, res) => {
       });
     }
 
-    // Format the response
     const profile = {
       id: developer._id,
       name: `${developer.firstName} ${developer.lastName}`,
@@ -203,7 +200,9 @@ export const getDeveloperProfileById = async (req, res) => {
     });
   }
 };
-// Add Service
+
+
+
 export const addService = async (req, res) => {
   const { id } = req.params;
   const { serviceDetails } = req.body;
@@ -226,3 +225,33 @@ export const addService = async (req, res) => {
     res.status(500).json({ message: "Error adding service", error });
   }
 };
+
+
+export const getDeveloperEarnings = async (req,res) => {
+  try {
+    const id = req.user.id
+    const developer = await Developer.findById(id).select('earnings transactions earningsHistory');
+
+    if(!developer) {
+      return res.status(404).json({message: 'Developer not found'});
+    }
+
+    const chartData = developer.earningsHistory.map(item => ({
+      month: item.month,
+      amount: item.month,
+    }));
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        earnings: developer.earnings,
+        transaction: developer.transactions,
+        chartData
+      }
+    });
+
+  }catch(error){
+    console.error("Error fatching earnings:",error);
+    res.status(500).json({message: 'Error facthing earnings data',error})
+  }
+}
