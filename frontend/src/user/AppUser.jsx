@@ -11,6 +11,7 @@ import FindWorkPage from './pages/FindWork';
 import JobDetailsPage from './components/JobDetails';
 import ClientDashboard from './pages/ClientDashboard';
 import DeveloperEarnings from './pages/DeveloperEarnings';
+import DeveloperProfile from './pages/ProfilePage';
 
 const AppUser = () => {
   return (
@@ -27,6 +28,7 @@ const AppUser = () => {
         <Route path='/find-work/:id' element={<JobDetailsPage/>}/>
         <Route path='/client-dashboard' element={<ClientDashboard/>}/>
         <Route path='/freelancer-earnings' element={<DeveloperEarnings/>}/>
+        <Route path='/freelancer-profile/:developerId' element={<DeveloperProfile/>}/>
     </Routes>
   )
 }

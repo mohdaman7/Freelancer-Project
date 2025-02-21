@@ -10,7 +10,7 @@ router.post('/login', loginDeveloper);
 
 
 router.get('/profile', authenticateUser(['client', 'developer']), getDeveloperProfile);
-router.put('/profile/:id', authenticateUser(['developer']), getDeveloperProfileById);
+router.get('/profile/:id', authenticateUser(['client', 'developer']), getDeveloperProfileById);
 router.post('/services/:id', authenticateUser(['developer']), addService);
 
 router.get('/earnings', authenticateUser(['developer']),getDeveloperEarnings)

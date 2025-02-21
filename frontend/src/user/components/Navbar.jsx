@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { Code, ChevronDown, User, LogOut, Briefcase, DollarSign, BarChart2 } from "lucide-react"
 import { Link, useNavigate, useLocation } from "react-router-dom"
@@ -11,12 +9,12 @@ const Navbar = () => {
   const [role, setRole] = useState(localStorage.getItem("role"))
   const [isScrolled, setIsScrolled] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [developerId, setDeveloperId] = useState(localStorage.getItem("developerId"))
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10)
     }
-
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
@@ -30,6 +28,7 @@ const Navbar = () => {
     navigate("/")
     window.location.reload()
   }
+
 
   const navLinkClass = "text-gray-300 hover:text-white transition-colors duration-200"
   const activeNavLinkClass = "text-white font-semibold"
@@ -153,7 +152,7 @@ const Navbar = () => {
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md overflow-hidden shadow-xl z-10">
                     <Link
-                      to="/profile"
+                      to={`/freelancer-profile/${developerId}`}
                       className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200"
                     >
                       <User className="w-4 h-4 inline-block mr-2" /> Profile

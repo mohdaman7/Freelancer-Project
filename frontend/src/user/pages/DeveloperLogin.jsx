@@ -22,10 +22,16 @@ const DeveloperLogin = () => {
         password,
       });
 
+      const {token,developer} = response.data
+      console.log(developer.id,'iddddddddddddddddddddd')
+
+      console.log(developer,'resssssssssssssss')
+
       if (response.data) {
         toast.success("Login successful!");
-        localStorage.setItem("token", response.data.token)
+        localStorage.setItem("token", token)
         localStorage.setItem('role', 'developer');
+        localStorage.setItem('developerId', developer.id);
         navigate("/");
       }
     } catch (error) {

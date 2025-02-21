@@ -20,25 +20,24 @@ export const authenticateUser = (allowedRoles) => {
       }
 
 
-      // Verify token
       jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
           return res.status(401).json({ message: "Unauthorized. Token is invalid or expired." });
         }
 
-        // Attach user data to request object
+        
         req.user = {
           id: decoded.id,
           email: decoded.email,
-          role: decoded.role, // Role is included in the token payload
+          role: decoded.role, 
         };
 
-        // Check if user's role is allowed
+      
         if (!allowedRoles.includes(req.user.role)) {
           return res.status(403).json({ message: "Access denied. You do not have permission to access this resource." });
         }
 
-        next(); // Pass control to next middleware/controller
+        next(); 
       });
     } catch (error) {
       console.error("JWT Authentication Error:", error);

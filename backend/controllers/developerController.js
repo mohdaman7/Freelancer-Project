@@ -73,7 +73,6 @@ export const registerDeveloper = async (req, res) => {
   }
 };
 
-
 export const loginDeveloper = async (req, res) => {
   const { email, password } = req.body;
 
@@ -83,23 +82,28 @@ export const loginDeveloper = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    
     const isPasswordValid = await bcrypt.compare(password, developer.password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    
-    const token = jwt.sign({ id: developer._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(
+      {
+        id: developer._id,
+        email: developer.email,
+        role: developer.role, 
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "4h" }
+    );
 
-  
     res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
 
     res.status(200).json({
       message: "Login successful",
       developer: {
         id: developer._id,
-        name: developer.name,
+        name: `${developer.firstName} ${developer.lastName}`,
         email: developer.email,
       },
       token,
@@ -113,7 +117,6 @@ export const loginDeveloper = async (req, res) => {
 
 export const getDeveloperProfile = async (req, res) => {
   try {
-    
     const developers = await Developer.find()
       .select("-password -__v -createdAt -updatedAt");
 
@@ -124,7 +127,6 @@ export const getDeveloperProfile = async (req, res) => {
       });
     }
 
-    
     const profiles = developers.map((developer) => ({
       id: developer._id,
       name: `${developer.firstName} ${developer.lastName}`,
@@ -139,7 +141,7 @@ export const getDeveloperProfile = async (req, res) => {
       profilePhoto: developer.profilePhoto,
       bio: developer.bio,
       rating: developer.rating,
-      status: developer.status
+      status: developer.status,
     }));
 
     res.status(200).json({
@@ -158,11 +160,11 @@ export const getDeveloperProfile = async (req, res) => {
 
 
 export const getDeveloperProfileById = async (req, res) => {
-  const { id } = req.params;
   try {
-    
-    const developer = await Developer.findById(id)
-      .select("-password -__v -createdAt -updatedAt");
+    console.log('idddddd',req.params.id)
+    const developer = await Developer.findById(req.params.id)
+      .select('-password -__v -createdAt -updatedAt')
+      .lean();
 
     if (!developer) {
       return res.status(404).json({
@@ -173,19 +175,23 @@ export const getDeveloperProfileById = async (req, res) => {
 
     const profile = {
       id: developer._id,
-      name: `${developer.firstName} ${developer.lastName}`,
+      firstName: developer.firstName,
+      lastName: developer.lastName,
       email: developer.email,
       title: developer.title,
       hourlyRate: developer.hourlyRate,
       country: developer.country,
-      githubUrl: developer.githubUrl,
-      linkedinUrl: developer.linkedinUrl,
       skills: developer.skills,
       experienceLevel: developer.experienceLevel,
+      githubUrl: developer.githubUrl,
+      linkedinUrl: developer.linkedinUrl,
       profilePhoto: developer.profilePhoto,
       bio: developer.bio,
       rating: developer.rating,
-      status: developer.status
+      status: developer.status,
+      earnings: developer.earnings,
+      transactions: developer.transactions,
+      earningsHistory: developer.earningsHistory,
     };
 
     res.status(200).json({
@@ -193,7 +199,7 @@ export const getDeveloperProfileById = async (req, res) => {
       data: profile,
     });
   } catch (error) {
-    console.error("Error fetching developer profile by ID:", error);
+    console.error("Error fetching developer profile:", error);
     res.status(500).json({
       status: "error",
       message: "Internal server error fetching developer profile",

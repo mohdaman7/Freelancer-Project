@@ -27,7 +27,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// API Routes
+
 app.use("/api/admin", adminRoute);
 app.use("/api/client", clientRoute);
 app.use("/api/developers", developerRoute); 
