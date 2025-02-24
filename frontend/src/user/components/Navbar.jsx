@@ -125,7 +125,7 @@ const Navbar = () => {
             {!token ? (
               <>
                 <Link
-                  to="/client-login"
+                  to="/login"
                   className="text-gray-300 hover:text-white px-4 py-2 rounded-lg transition-colors duration-200"
                 >
                   Sign In
