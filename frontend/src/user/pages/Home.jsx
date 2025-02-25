@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { Link } from 'react-router-dom';
 
 const HomePage = () => {
   const [role, setRole] = useState(null);
@@ -20,13 +21,13 @@ const HomePage = () => {
     if (role === 'client') {
       return (
         <div className="flex gap-4 justify-center mb-12">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center group">
+          <Link to="/post-job" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center group">
             Post a Project
             <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
-          </button>
-          <button className="border border-gray-700 text-gray-300 hover:text-white px-6 py-3 rounded-lg">
+          </Link>
+          <Link to="/client-dashboard" className="border border-gray-700 text-gray-300 hover:text-white px-6 py-3 rounded-lg">
             My Projects
-          </button>
+          </Link>
         </div>
       );
     }
@@ -34,10 +35,10 @@ const HomePage = () => {
     if (role === 'developer') {
       return (
         <div className="flex gap-4 justify-center mb-12">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center group">
+          <Link to="/find-work" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center group">
             Find Work
             <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
-          </button>
+          </Link>
           <button className="border border-gray-700 text-gray-300 hover:text-white px-6 py-3 rounded-lg">
             My Applications
           </button>
@@ -47,13 +48,13 @@ const HomePage = () => {
 
     return (
       <div className="flex gap-4 justify-center mb-12">
-        <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center group">
+        <Link to="/get-started" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center group">
           Hire Developers
           <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
-        </button>
-        <button className="border border-gray-700 text-gray-300 hover:text-white px-6 py-3 rounded-lg">
+        </Link>
+        <Link to="/get-started" className="border border-gray-700 text-gray-300 hover:text-white px-6 py-3 rounded-lg">
           Join as Developer
-        </button>
+        </Link>
       </div>
     );
   };
@@ -62,12 +63,12 @@ const HomePage = () => {
     if (role === 'client') {
       return (
         <>
-          <button className="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-lg">
+          <Link to="/post-job" className="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-lg">
             Start New Project
-          </button>
-          <button className="border border-white text-white hover:bg-white/10 px-6 py-3 rounded-lg">
+          </Link>
+          <Link to="/client-dashboard" className="border border-white text-white hover:bg-white/10 px-6 py-3 rounded-lg">
             View Dashboard
-          </button>
+          </Link>
         </>
       );
     }
@@ -75,24 +76,24 @@ const HomePage = () => {
     if (role === 'developer') {
       return (
         <>
-          <button className="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-lg">
+          <Link to="/find-work" className="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-lg">
             Browse Jobs
-          </button>
-          <button className="border border-white text-white hover:bg-white/10 px-6 py-3 rounded-lg">
+          </Link>
+          <Link to='/freelancer-profile/:developerId' className="border border-white text-white hover:bg-white/10 px-6 py-3 rounded-lg">
             View Profile
-          </button>
+          </Link>
         </>
       );
     }
 
     return (
       <>
-        <button className="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-lg">
+        <Link to="/get-started" className="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-lg">
           Start Project
-        </button>
-        <button className="border border-white text-white hover:bg-white/10 px-6 py-3 rounded-lg">
+        </Link>
+        <Link to="/get-started" className="border border-white text-white hover:bg-white/10 px-6 py-3 rounded-lg">
           Join as Developer
-        </button>
+        </Link>
       </>
     );
   };
@@ -150,9 +151,11 @@ const HomePage = () => {
                 <p className="text-gray-300">{feature.description}</p>
               </div>
             </div>
+
           ))}
         </div>
       </div>
+
 
 
       <div className="bg-gray-800/50 py-20">
