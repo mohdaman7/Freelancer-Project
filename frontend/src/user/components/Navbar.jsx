@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Code, ChevronDown, User, LogOut, Briefcase, DollarSign, BarChart2 } from "lucide-react";
+import { Code, ChevronDown, User, LogOut, Briefcase, DollarSign, BarChart2, Bell } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
-import Notification from "./Notification";
 import { socket } from "../utils/Socket.jsx";
+import axios from "axios";
+
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -13,13 +14,14 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [developerId] = useState(localStorage.getItem("developerId"));
+  const [unreadCount, setUnreadCount] = useState(0); // Track unread notifications
 
   // Handle scroll event for navbar styling
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-  
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -35,6 +37,35 @@ const Navbar = () => {
     toast.success("Logout successful");
     window.location.reload();
   };
+
+  // Fetch unread notification count
+  useEffect(() => {
+    if (token) {
+      const fetchUnreadCount = async () => {
+        try {
+          const response = await axios.get("/api/notifications/unread-count", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setUnreadCount(response.data.count);
+        } catch (error) {
+          console.error("Error fetching unread notifications:", error);
+        }
+      };
+
+      fetchUnreadCount();
+    }
+  }, [token]);
+
+  // Listen for new notifications
+  useEffect(() => {
+    if (token) {
+      socket.on("notification", () => {
+        setUnreadCount((prev) => prev + 1); // Increment unread count
+      });
+
+      return () => socket.off("notification");
+    }
+  }, [token]);
 
   // Navbar link styling
   const navLinkClass = "text-gray-300 hover:text-white transition-colors duration-200";
@@ -152,8 +183,17 @@ const Navbar = () => {
 
           {/* Right Side (Notification and Account) */}
           <div className="flex items-center gap-4">
-            {/* Notification Component */}
-            {token && <Notification />}
+            {/* Notification Icon with Link */}
+            {token && (
+              <Link to="/notification" className="relative p-2 hover:bg-gray-700 rounded-lg">
+                <Bell className="w-6 h-6 text-gray-300" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                    {unreadCount}
+                  </span>
+                )}
+              </Link>
+            )}
 
             {/* Auth Buttons */}
             {!token ? (

@@ -1,95 +1,104 @@
 import { useEffect, useState } from "react";
-import { Bell, X } from "lucide-react";
 import axios from "axios";
-import { io } from "socket.io-client";
+import { Bell } from "lucide-react";
+import { Link } from "react-router-dom";
 
-const Notification = () => {
+const NotificationPage = () => {
   const [notifications, setNotifications] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const token = localStorage.getItem("token");
 
-  // Fetch initial notifications
   useEffect(() => {
-    if (token) {
-      axios
-        .get("/api/notifications", {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((res) => setNotifications(res.data))
-        .catch((err) => console.error("Error fetching notifications:", err));
-    }
+    const fetchNotifications = async () => {
+        try {
+          const response = await axios.get("http://localhost:3000/api/notifications", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+      
+          console.log("API Response:", response.data); 
+          const receivedData = response.data.data || response.data || [];
+          console.log("Received Data:", receivedData); 
+      
+          if (!Array.isArray(receivedData)) {
+            throw new Error("Invalid data format from server");
+          }
+      
+          setNotifications(receivedData);
+        } catch (error) {
+          setError(error.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+    if (token) fetchNotifications();
   }, [token]);
 
-  // Socket.IO setup
-  useEffect(() => {
-    const socket = io("http://localhost:3000");
+  // Loading state
+  if (loading) {
+    return (
+      <div className="p-6 text-gray-400 flex justify-center">
+        <Bell className="animate-bounce w-8 h-8" />
+      </div>
+    );
+  }
 
-    socket.on("notification", (newNotification) => {
-      if (newNotification.userId === localStorage.getItem("userId")) {
-        setNotifications((prev) => [newNotification, ...prev]);
-      }
-    });
+  // Error state
+  if (error) {
+    return (
+      <div className="p-6 text-red-400 text-center">
+        <p>⚠️ Error loading notifications</p>
+        <p className="text-sm mt-2">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-4 px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 transition-colors"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
 
-    return () => socket.disconnect();
-  }, []);
-
-  const handleDecision = async (proposalId, status) => {
-    try {
-      await axios.post(
-        `/api/proposal/decision`,
-        { proposalId, status },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-    } catch (error) {
-      console.error("Error handling decision:", error);
-    }
-  };
-
+  // Render notifications
   return (
-    <div className="relative">
-      <button onClick={() => setIsOpen(!isOpen)} className="p-2">
-        <Bell className="w-6 h-6" />
-        {notifications.length > 0 && (
-          <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 text-xs">
-            {notifications.length}
-          </span>
-        )}
-      </button>
+    <div className="p-6 max-w-3xl mx-auto">
+      <h1 className="text-2xl font-bold mb-8 flex items-center gap-3 text-blue-400">
+        <Bell className="w-7 h-7" />
+        Your Notifications
+      </h1>
 
-      {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg p-4">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="font-bold">Notifications</h3>
-            <button onClick={() => setIsOpen(false)}>
-              <X className="w-5 h-5" />
-            </button>
+      <div className="space-y-4">
+        {notifications.length === 0 ? (
+          <div className="text-center py-8 text-gray-400">
+            No notifications found
           </div>
-
-          {notifications.map((notification) => (
-            <div key={notification._id} className="p-2 border-b">
-              <p>{notification.message}</p>
-              {notification.type === "newProposal" && (
-                <div className="mt-2 space-x-2">
-                  <button
-                    onClick={() => handleDecision(notification.proposalId, "approved")}
-                    className="px-2 py-1 bg-green-500 text-white rounded"
+        ) : (
+          notifications.map((notification) => (
+            <div
+              key={notification._id}
+              className="p-4 bg-gray-800 rounded-xl border border-gray-700 hover:border-blue-500 transition-all"
+            >
+              <p className="text-gray-100">{notification.message}</p>
+              <div className="mt-3 flex items-center justify-between">
+                <span className="text-sm text-gray-400">
+                  {new Date(notification.createdAt).toLocaleDateString()}
+                </span>
+                {notification.jobId && (
+                  <Link
+                    to={`/job/${notification.jobId}`}
+                    className="text-blue-400 hover:text-blue-300 text-sm"
                   >
-                    Accept
-                  </button>
-                  <button
-                    onClick={() => handleDecision(notification.proposalId, "rejected")}
-                    className="px-2 py-1 bg-red-500 text-white rounded"
-                  >
-                    Reject
-                  </button>
-                </div>
-              )}
+                    View Job →
+                  </Link>
+                )}
+              </div>
             </div>
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
     </div>
   );
 };
 
-export default Notification;
+export default NotificationPage;

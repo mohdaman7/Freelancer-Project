@@ -13,6 +13,7 @@ import ClientDashboard from './pages/ClientDashboard';
 import DeveloperEarnings from './pages/DeveloperEarnings';
 import DeveloperProfile from './pages/ProfilePage';
 import LoginSelection from './components/Login';
+import Notification from './components/Notification';
 
 const AppUser = () => {
   return (
@@ -31,6 +32,7 @@ const AppUser = () => {
         <Route path='/freelancer-earnings' element={<DeveloperEarnings/>}/>
         <Route path='/freelancer-profile/:developerId' element={<DeveloperProfile/>}/>
         <Route path='/login' element={<LoginSelection/>}/>
+        <Route path='/notification' element={<Notification/>}/>
     </Routes>
   )
 }
