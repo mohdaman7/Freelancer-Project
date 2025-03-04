@@ -101,17 +101,17 @@ const DeveloperEarnings = () => {
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold">Total Earnings</h2>
-                  <p className="text-3xl font-bold">${earnings.total.toFixed(2)}</p>
+                  <p className="text-3xl font-bold">${earnings?.total.toFixed(2)}</p>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-gray-700/20 p-4 rounded-xl">
                   <p className="text-sm text-gray-400">Available Balance</p>
-                  <p className="text-xl font-semibold">${earnings.available.toFixed(2)}</p>
+                  <p className="text-xl font-semibold">${earnings?.available.toFixed(2)}</p>
                 </div>
                 <div className="bg-gray-700/20 p-4 rounded-xl">
                   <p className="text-sm text-gray-400">Pending Clearance</p>
-                  <p className="text-xl font-semibold">${earnings.pending.toFixed(2)}</p>
+                  <p className="text-xl font-semibold">${earnings?.pending.toFixed(2)}</p>
                 </div>
               </div>
               <button 
@@ -158,22 +158,22 @@ const DeveloperEarnings = () => {
               <History className="w-6 h-6 text-blue-400" />
             </div>
             <div className="space-y-4">
-              {transactions.map((transaction, index) => (
+              {transactions?.map((transaction, index) => (
                 <div
                   key={index}
                   className="flex justify-between items-center p-4 bg-gray-700/20 rounded-lg"
                 >
                   <div>
-                    <p className="font-medium">{transaction.description}</p>
+                    <p className="font-medium">{transaction?.description}</p>
                     <p className="text-sm text-gray-400">
-                      {new Date(transaction.date).toLocaleDateString()}
+                      {new Date(transaction?.date).toLocaleDateString()}
                     </p>
                   </div>
                   <div className="text-right">
                     <p className={`font-semibold ${
                       transaction.amount > 0 ? 'text-green-400' : 'text-red-400'
                     }`}>
-                      ${Math.abs(transaction.amount).toFixed(2)}
+                      ${Math.abs(transaction?.amount).toFixed(2)}
                     </p>
                     <p className={`text-sm ${
                       transaction.status === 'Completed' ? 'text-green-400' :

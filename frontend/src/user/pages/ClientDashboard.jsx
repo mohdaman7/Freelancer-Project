@@ -111,7 +111,7 @@ const ClientDashboard = () => {
             </div>
           </div>
 
-          {/* Stats Cards with Minimized Hover Effects */}
+          
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-10">
             <div className="bg-gradient-to-br from-gray-800/80 to-gray-700/50 backdrop-blur-sm p-6 rounded-xl shadow-xl border border-gray-700 transition-all hover:shadow-md">
               <div className="flex items-center gap-3 mb-3">
@@ -159,7 +159,7 @@ const ClientDashboard = () => {
             </div>
           </div>
 
-          {/* Improved Tab Navigation */}
+          
           <nav className="flex gap-4 mb-10 border-b border-gray-700/50 backdrop-blur-md rounded-t-lg bg-gray-800/30 p-1">
             {['projects', 'settings'].map((tab) => (
               <button
@@ -179,7 +179,7 @@ const ClientDashboard = () => {
             ))}
           </nav>
 
-          {/* Projects Tab Content */}
+
           {activeTab === "projects" && (
             <div className="grid gap-8">
               <div className="flex justify-between items-center">
@@ -234,7 +234,6 @@ const ClientDashboard = () => {
             </div>
           )}
 
-          {/* Add Funds Modal with Improved Design */}
           {showAddFunds && (
             <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
               <div className="bg-gradient-to-br from-gray-800 to-gray-700 p-8 rounded-xl w-full max-w-md border border-gray-600 shadow-2xl">

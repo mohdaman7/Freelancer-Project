@@ -92,7 +92,7 @@ const Developers = () => {
       <div className="min-h-screen bg-[#0F172A] text-gray-100">
         {error === "Please login to view developers" && (
           <div className="text-center py-8">
-            <div className="bg-red-500/20 p-6 rounded-lg max-w-md mx-auto">
+            <div className="bg-red-500/20 p-6 rounded-lg max-w-md mx-auto mt-20">
               <h3 className="text-xl font-bold mb-4">
                 Authentication Required
               </h3>
@@ -151,7 +151,7 @@ const Developers = () => {
                   {currentDevelopers.map((developer) => (
                     <div
                       key={developer._id}
-                      className="bg-gray-800 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-700 hover:border-cyan-500"
+                      className="bg-gray-800 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-700 hover:border-cyan-500"
                     >
                       <div className="flex items-start space-x-4">
                         <img

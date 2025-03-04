@@ -48,11 +48,11 @@ const HomePage = () => {
 
     return (
       <div className="flex gap-4 justify-center mb-12">
-        <Link to="/get-started" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center group">
+        <Link to="/developers" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center group">
           Hire Developers
           <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
         </Link>
-        <Link to="/get-started" className="border border-gray-700 text-gray-300 hover:text-white px-6 py-3 rounded-lg">
+        <Link to="/freelancer-register" className="border border-gray-700 text-gray-300 hover:text-white px-6 py-3 rounded-lg">
           Join as Developer
         </Link>
       </div>

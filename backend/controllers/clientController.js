@@ -1,5 +1,4 @@
-import Client from "../models/clientModel.js";
-import Job from "../models/jobModel.js";
+import { Client, Job } from "../models/index.js";
 import { ClientRegisterJoi, ClientLoginJoi } from "../validation/Clientauthjoi.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";

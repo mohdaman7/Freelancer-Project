@@ -1,33 +1,44 @@
 import mongoose from "mongoose";
 
 const clientSchema = new mongoose.Schema({
-  name: { type: String, require: true },
-
-  email: { type: String, require: true, unique: true },
-
-  password: { type: String, require: true },
-
-  company: { type: String },
-
+  name: { 
+    type: String, 
+    required: true 
+  },
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true 
+  },
+  password: { 
+    type: String, 
+    required: true 
+  },
+  company: { 
+    type: String 
+  },
   role: {
     type: String,
     enum: ["client"],
     default: "client", 
     required: true,
   },
-
-  projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
-
-  balance: { type: Number, default: 0 },
-
-  createAt: { type: Date, default: Date.now },
-
-  balance: {
-    type: Number,
+  projects: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "Project" 
+  }],
+  balance: { 
+    type: Number, 
     default: 0,
-    min: 0
+    min: 0 
+  },
+  createdAt: { 
+    type: Date, 
+    default: Date.now 
   }
 });
 
-const Client = mongoose.model("Client", clientSchema);
+// Check if the model already exists before creating it
+const Client = mongoose.models.Client || mongoose.model("Client", clientSchema);
+
 export default Client;

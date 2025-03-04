@@ -7,13 +7,10 @@ import {
   Clock,
   Briefcase,
   Code,
-  Zap,
-  Users,
   ChevronRight,
   Smartphone,
   Database,
   Palette,
-  Shield,
   Search,
 } from "lucide-react";
 import Navbar from "../components/Navbar";

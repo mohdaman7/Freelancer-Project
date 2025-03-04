@@ -38,7 +38,7 @@ export const authenticateUser = (allowedRoles) => {
         }
 
         next(); 
-      });
+      }); 
     } catch (error) {
       console.error("JWT Authentication Error:", error);
       return res.status(500).json({ message: "Server error during authentication" });

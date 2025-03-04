@@ -1,37 +1,44 @@
-import { useState, useEffect } from "react"
-import { Code, ChevronDown, User, LogOut, Briefcase, DollarSign, BarChart2 } from "lucide-react"
-import { Link, useNavigate, useLocation } from "react-router-dom"
+import { useState, useEffect } from "react";
+import { Code, ChevronDown, User, LogOut, Briefcase, DollarSign, BarChart2 } from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { toast } from "sonner";
+import Notification from "./Notification";
+import { socket } from "../utils/Socket.jsx";
 
 const Navbar = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const [token, setToken] = useState(localStorage.getItem("token"))
-  const [role, setRole] = useState(localStorage.getItem("role"))
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [developerId, setDeveloperId] = useState(localStorage.getItem("developerId"))
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [role, setRole] = useState(localStorage.getItem("role"));
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [developerId] = useState(localStorage.getItem("developerId"));
 
+  // Handle scroll event for navbar styling
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+      setIsScrolled(window.scrollY > 10);
+    };
+  
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
+  // Handle logout
   const handleLogout = () => {
-    localStorage.removeItem("token")
-    localStorage.removeItem("role")
-    localStorage.clear()
-    setToken(null)
-    setRole(null)
-    navigate("/")
-    window.location.reload()
-  }
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("developerId");
+    setToken(null);
+    setRole(null);
+    navigate("/");
+    toast.success("Logout successful");
+    window.location.reload();
+  };
 
-
-  const navLinkClass = "text-gray-300 hover:text-white transition-colors duration-200"
-  const activeNavLinkClass = "text-white font-semibold"
+  // Navbar link styling
+  const navLinkClass = "text-gray-300 hover:text-white transition-colors duration-200";
+  const activeNavLinkClass = "text-white font-semibold";
 
   return (
     <nav
@@ -41,6 +48,7 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
+          {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <Code className="w-8 h-8 text-blue-400 group-hover:text-blue-300 transition-colors duration-200" />
             <span className="font-bold text-xl text-white group-hover:text-gray-200 transition-colors duration-200">
@@ -48,30 +56,39 @@ const Navbar = () => {
             </span>
           </Link>
 
+          {/* Navigation Links */}
           <div className="hidden md:flex items-center gap-6">
             {!token ? (
               <>
                 <Link
-                  to="/hire"
-                  className={`${navLinkClass} ${location.pathname === "/hire" ? activeNavLinkClass : ""}`}
+                  to="/developers"
+                  className={`${navLinkClass} ${
+                    location.pathname === "/developers" ? activeNavLinkClass : ""
+                  }`}
                 >
                   Hire Top Developers
                 </Link>
                 <Link
-                  to="/join"
-                  className={`${navLinkClass} ${location.pathname === "/join" ? activeNavLinkClass : ""}`}
+                  to="/freelancer-register"
+                  className={`${navLinkClass} ${
+                    location.pathname === "/join" ? activeNavLinkClass : ""
+                  }`}
                 >
                   Join as Developer
                 </Link>
                 <Link
                   to="/how-it-works"
-                  className={`${navLinkClass} ${location.pathname === "/how-it-works" ? activeNavLinkClass : ""}`}
+                  className={`${navLinkClass} ${
+                    location.pathname === "/how-it-works" ? activeNavLinkClass : ""
+                  }`}
                 >
                   How It Works
                 </Link>
                 <Link
                   to="/pricing"
-                  className={`${navLinkClass} ${location.pathname === "/pricing" ? activeNavLinkClass : ""}`}
+                  className={`${navLinkClass} ${
+                    location.pathname === "/pricing" ? activeNavLinkClass : ""
+                  }`}
                 >
                   Pricing
                 </Link>
@@ -80,19 +97,25 @@ const Navbar = () => {
               <>
                 <Link
                   to="/find-work"
-                  className={`${navLinkClass} ${location.pathname === "/find-work" ? activeNavLinkClass : ""}`}
+                  className={`${navLinkClass} ${
+                    location.pathname === "/find-work" ? activeNavLinkClass : ""
+                  }`}
                 >
                   Find Work
                 </Link>
                 <Link
                   to="/freelancer-earnings"
-                  className={`${navLinkClass} ${location.pathname === "/freelancer-earnings" ? activeNavLinkClass : ""}`}
+                  className={`${navLinkClass} ${
+                    location.pathname === "/freelancer-earnings" ? activeNavLinkClass : ""
+                  }`}
                 >
                   Earnings
                 </Link>
                 <Link
                   to="/my-projects"
-                  className={`${navLinkClass} ${location.pathname === "/my-projects" ? activeNavLinkClass : ""}`}
+                  className={`${navLinkClass} ${
+                    location.pathname === "/my-projects" ? activeNavLinkClass : ""
+                  }`}
                 >
                   My Projects
                 </Link>
@@ -101,19 +124,25 @@ const Navbar = () => {
               <>
                 <Link
                   to="/developers"
-                  className={`${navLinkClass} ${location.pathname === "/developers" ? activeNavLinkClass : ""}`}
+                  className={`${navLinkClass} ${
+                    location.pathname === "/developers" ? activeNavLinkClass : ""
+                  }`}
                 >
                   Find Developers
                 </Link>
                 <Link
                   to="/post-job"
-                  className={`${navLinkClass} ${location.pathname === "/post-job" ? activeNavLinkClass : ""}`}
+                  className={`${navLinkClass} ${
+                    location.pathname === "/post-job" ? activeNavLinkClass : ""
+                  }`}
                 >
                   Post Project
                 </Link>
                 <Link
                   to="/client-dashboard"
-                  className={`${navLinkClass} ${location.pathname === "/client-dashboard" ? activeNavLinkClass : ""}`}
+                  className={`${navLinkClass} ${
+                    location.pathname === "/client-dashboard" ? activeNavLinkClass : ""
+                  }`}
                 >
                   Dashboard
                 </Link>
@@ -121,7 +150,12 @@ const Navbar = () => {
             )}
           </div>
 
+          {/* Right Side (Notification and Account) */}
           <div className="flex items-center gap-4">
+            {/* Notification Component */}
+            {token && <Notification />}
+
+            {/* Auth Buttons */}
             {!token ? (
               <>
                 <Link
@@ -139,6 +173,7 @@ const Navbar = () => {
               </>
             ) : (
               <div className="relative">
+                {/* Account Dropdown Toggle */}
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors duration-200"
@@ -146,9 +181,13 @@ const Navbar = () => {
                   <User className="w-5 h-5" />
                   <span>Account</span>
                   <ChevronDown
-                    className={`w-4 h-4 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      isDropdownOpen ? "rotate-180" : ""
+                    }`}
                   />
                 </button>
+
+                {/* Account Dropdown */}
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md overflow-hidden shadow-xl z-10">
                     <Link
@@ -194,8 +233,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
-
+export default Navbar;
