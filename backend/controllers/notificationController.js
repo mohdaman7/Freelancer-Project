@@ -46,3 +46,23 @@ export const markNotificationAsRead = async (req, res) => {
     });
   }
 };
+
+export const getUnreadCount = async (req, res) => {
+  try {
+    const count = await Notification.countDocuments({
+      userId: req.user.id,
+      status: { $ne: 'read' }
+    });
+
+    res.status(200).json({
+      status: 'success',
+      count
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
