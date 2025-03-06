@@ -261,3 +261,111 @@ export const getDeveloperEarnings = async (req,res) => {
     res.status(500).json({message: 'Error facthing earnings data',error})
   }
 }
+
+
+export const updateDeveloperProfile = async (req,res) => {
+  try {
+    const updates = req.body;
+    const developer = await Developer.findByIdAndUpdate(
+      req.user.id,
+      {$set: updates},
+      {new: true,runValidators:true}
+    ).select('-password');
+
+    if(!developer){
+      return res.status(404).json({message: "Developer not found"});
+
+    }
+
+    res.status(200).json({
+      status:"success",
+      data: developer
+    })
+  }catch(error){
+    console.error("Error updating profile: ",error)
+    res.status(500).json({
+      status: "error",
+      message: "Error updating profile",
+      error: error.message
+    })
+  }
+}
+
+
+
+export const updateDeveloperSkills = async (req, res) => {
+  try {
+    const developer = await Developer.findByIdAndUpdate(
+      req.user.id,
+      { $set: { skills: req.body.skills } },
+      { new: true }
+    ).select('skills');
+
+    res.status(200).json({
+      status: "success",
+      data: developer.skills
+    });
+  } catch (error) {
+    console.error("Error updating skills:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Error updating skills"
+    });
+  }
+};
+
+
+export const updateSocialLinks = async (req, res) => {
+  try {
+    const developer = await Developer.findByIdAndUpdate(
+      req.user.id,
+      { 
+        $set: {
+          githubUrl: req.body.githubUrl,
+          linkedinUrl: req.body.linkedinUrl
+        }
+      },
+      { new: true }
+    ).select('githubUrl linkedinUrl');
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        githubUrl: developer.githubUrl,
+        linkedinUrl: developer.linkedinUrl
+      }
+    });
+  } catch (error) {
+    console.error("Error updating social links:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Error updating social links"
+    });
+  }
+};
+
+
+export const updateResume = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const developer = await Developer.findByIdAndUpdate(
+      req.user.id,
+      { resumeUrl: req.file.path },
+      { new: true }
+    ).select('resumeUrl');
+
+    res.status(200).json({
+      status: "success",
+      data: developer.resumeUrl
+    });
+  } catch (error) {
+    console.error("Error updating resume:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Error updating resume"
+    });
+  }
+};
