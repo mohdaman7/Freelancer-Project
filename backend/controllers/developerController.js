@@ -263,33 +263,51 @@ export const getDeveloperEarnings = async (req,res) => {
 }
 
 
-export const updateDeveloperProfile = async (req,res) => {
+export const updateDeveloperProfile = async (req, res) => {
   try {
     const updates = req.body;
+
+    if (updates.skills) {
+      for (const skill of updates.skills) {
+        if (!skill.name || !skill.experience) {
+          return res.status(400).json({
+            status: "error",
+            message: "Each skill must have a name and experience field.",
+          });
+        }
+        if (!["Beginner", "Intermediate", "Expert"].includes(skill.experience)) {
+          return res.status(400).json({
+            status: "error",
+            message: "Experience must be one of: Beginner, Intermediate, Expert.",
+          });
+        }
+      }
+    }
+
     const developer = await Developer.findByIdAndUpdate(
       req.user.id,
-      {$set: updates},
-      {new: true,runValidators:true}
-    ).select('-password');
+      { $set: updates },
+      { new: true, runValidators: true }
+    ).select("-password");
 
-    if(!developer){
-      return res.status(404).json({message: "Developer not found"});
-
+    if (!developer) {
+      return res.status(404).json({ message: "Developer not found" });
     }
 
     res.status(200).json({
-      status:"success",
-      data: developer
-    })
-  }catch(error){
-    console.error("Error updating profile: ",error)
+      status: "success",
+      data: developer,
+    });
+  } catch (error) {
+    console.error("Error updating profile: ", error);
     res.status(500).json({
       status: "error",
       message: "Error updating profile",
-      error: error.message
-    })
+      error: error.message,
+    });
   }
-}
+};
+
 
 
 

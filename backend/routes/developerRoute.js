@@ -15,7 +15,7 @@ import {
 import validateDeveloper from '../validation/DeveloperValidation.js';
 import { authenticateUser } from '../middlewares/userMiddleware.js';
 
-// Configure multer for file uploads
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'uploads/resumes/');
@@ -39,7 +39,7 @@ const upload = multer({
     cb(new Error('Only PDF, DOC, and DOCX files are allowed!'));
   },
   limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB limit
+    fileSize: 5 * 1024 * 1024 
   }
 });
 

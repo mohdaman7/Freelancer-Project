@@ -9,8 +9,8 @@ import {
   Briefcase,
   ChevronRight,
   FileText,
-  Gear,
   X,
+  Settings,
   Plus,
   Trash2,
   UploadCloud,
@@ -30,6 +30,7 @@ import {
 } from "chart.js";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { toast } from "sonner";
 
 ChartJS.register(
   CategoryScale,
@@ -66,7 +67,7 @@ const DeveloperProfile = () => {
           }
         );
         setDeveloper(response.data.data);
-        setEditData(response.data.data); // Initialize editData with fetched data
+        setEditData(response.data.data);
       } catch (err) {
         setError("Failed to fetch developer profile");
         console.error("Error fetching developer profile:", err);
@@ -78,7 +79,6 @@ const DeveloperProfile = () => {
     fetchDeveloperProfile();
   }, [developerId]);
 
-  // Handle Save Changes
   const handleSave = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -91,11 +91,10 @@ const DeveloperProfile = () => {
       setIsEditing(false);
     } catch (error) {
       console.error("Error saving profile:", error);
-      // Handle error (e.g., show toast notification)
     }
   };
 
-  // Handle File Upload
+ 
   const handleFileUpload = async () => {
     if (!selectedFile) return;
 
@@ -118,11 +117,10 @@ const DeveloperProfile = () => {
       setSelectedFile(null);
     } catch (error) {
       console.error("Error uploading resume:", error);
-      // Handle error (e.g., show toast notification)
     }
   };
 
-  // Chart Data
+
   const chartData = {
     labels: developer?.earningsHistory?.map((item) => item.month) || [],
     datasets: [
@@ -136,7 +134,7 @@ const DeveloperProfile = () => {
     ],
   };
 
-  // Loading State
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100 flex items-center justify-center">
@@ -145,25 +143,14 @@ const DeveloperProfile = () => {
     );
   }
 
-  // Error State
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-red-500 mb-4">Error</h2>
-          <p className="text-xl text-gray-300">{error}</p>
-        </div>
-      </div>
-    );
-  }
-
-  // No Data State
   if (!developer) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-3xl font-bold mb-4">No Data Found</h2>
-          <p className="text-xl text-gray-300">Developer profile not available.</p>
+          <p className="text-xl text-gray-300">
+            Developer profile not available.
+          </p>
         </div>
       </div>
     );
@@ -180,12 +167,12 @@ const DeveloperProfile = () => {
               onClick={() => setIsEditing(true)}
               className="p-2 hover:bg-gray-700/50 rounded-full transition-colors"
             >
-              <Gear className="w-6 h-6 text-blue-400" />
+              <Settings className="w-6 h-6 text-blue-400" />
             </button>
           </div>
           <div className="flex flex-col md:flex-row items-center gap-8">
             <img
-              src={developer.profilePhoto || "https://via.placeholder.com/150"}
+              src="https://img.freepik.com/premium-photo/portrait-successful-programmer-game-developer-coder-guy-uses-computer-laptop-work-game-design-hacker-boy-generative-ai-cyber-gamer_117038-7605.jpg?w=740"
               alt="Profile"
               className="w-48 h-48 rounded-full object-cover border-4 border-blue-500 shadow-lg"
             />
@@ -225,11 +212,8 @@ const DeveloperProfile = () => {
           </div>
         </div>
 
-        {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column */}
           <div className="lg:col-span-1 space-y-8">
-            {/* Skills Section */}
             <div className="bg-gray-800/50 border border-gray-700 rounded-3xl p-6 shadow-xl backdrop-blur-sm">
               <h2 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">
                 Skills
@@ -252,7 +236,6 @@ const DeveloperProfile = () => {
               </div>
             </div>
 
-            {/* Connect Section */}
             <div className="bg-gray-800/50 border border-gray-700 rounded-3xl p-6 shadow-xl backdrop-blur-sm">
               <h2 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">
                 Connect
@@ -284,7 +267,7 @@ const DeveloperProfile = () => {
             </div>
           </div>
 
-          {/* Right Column */}
+         
           <div className="lg:col-span-2 space-y-8">
             <div className="bg-gray-800/50 border border-gray-700 rounded-3xl p-6 shadow-xl backdrop-blur-sm">
               <div className="flex mb-6">
@@ -343,7 +326,9 @@ const DeveloperProfile = () => {
                         <h3 className="text-lg font-semibold mb-2">
                           {project.title}
                         </h3>
-                        <p className="text-gray-400 mb-4">{project.description}</p>
+                        <p className="text-gray-400 mb-4">
+                          {project.description}
+                        </p>
                         <div className="flex justify-between items-center">
                           <div className="flex gap-2">
                             {project.technologies.map((tech, techIndex) => (
@@ -436,7 +421,7 @@ const DeveloperProfile = () => {
                 ))}
               </div>
 
-              {/* Settings Content */}
+             
               <div className="flex-1 p-6">
                 {activeSettingsTab === "profile" && (
                   <div className="space-y-4">
@@ -448,7 +433,10 @@ const DeveloperProfile = () => {
                         <input
                           value={editData?.firstName || ""}
                           onChange={(e) =>
-                            setEditData({ ...editData, firstName: e.target.value })
+                            setEditData({
+                              ...editData,
+                              firstName: e.target.value,
+                            })
                           }
                           className="w-full bg-gray-900/50 border border-gray-700 rounded-lg px-4 py-2 text-white"
                         />
@@ -460,14 +448,19 @@ const DeveloperProfile = () => {
                         <input
                           value={editData?.lastName || ""}
                           onChange={(e) =>
-                            setEditData({ ...editData, lastName: e.target.value })
+                            setEditData({
+                              ...editData,
+                              lastName: e.target.value,
+                            })
                           }
                           className="w-full bg-gray-900/50 border border-gray-700 rounded-lg px-4 py-2 text-white"
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm text-gray-300 mb-2">Bio</label>
+                      <label className="block text-sm text-gray-300 mb-2">
+                        Bio
+                      </label>
                       <textarea
                         value={editData?.bio || ""}
                         onChange={(e) =>
@@ -491,19 +484,21 @@ const DeveloperProfile = () => {
                             setEditData({ ...editData, skills: newSkills });
                           }}
                           className="flex-1 bg-gray-900/50 border border-gray-700 rounded-lg px-4 py-2 text-white"
+                          placeholder="Skill Name"
                         />
-                        <input
-                          type="number"
-                          value={skill.level}
+                        <select
+                          value={skill.experience}
                           onChange={(e) => {
                             const newSkills = [...editData.skills];
-                            newSkills[index].level = e.target.value;
+                            newSkills[index].experience = e.target.value;
                             setEditData({ ...editData, skills: newSkills });
                           }}
-                          className="w-20 bg-gray-900/50 border border-gray-700 rounded-lg px-4 py-2 text-white"
-                          min="0"
-                          max="100"
-                        />
+                          className="w-32 bg-gray-900/50 border border-gray-700 rounded-lg px-4 py-2 text-white"
+                        >
+                          <option value="Beginner">Beginner</option>
+                          <option value="Intermediate">Intermediate</option>
+                          <option value="Expert">Expert</option>
+                        </select>
                         <button
                           onClick={() => {
                             const newSkills = editData.skills.filter(
@@ -521,7 +516,10 @@ const DeveloperProfile = () => {
                       onClick={() =>
                         setEditData({
                           ...editData,
-                          skills: [...editData.skills, { name: "", level: 50 }],
+                          skills: [
+                            ...editData.skills,
+                            { name: "", experience: "Beginner" },
+                          ],
                         })
                       }
                       className="w-full flex items-center justify-center gap-2 py-2 bg-gray-900/50 border border-dashed border-gray-600 rounded-lg hover:bg-gray-900"
@@ -540,7 +538,10 @@ const DeveloperProfile = () => {
                       <input
                         value={editData?.githubUrl || ""}
                         onChange={(e) =>
-                          setEditData({ ...editData, githubUrl: e.target.value })
+                          setEditData({
+                            ...editData,
+                            githubUrl: e.target.value,
+                          })
                         }
                         className="w-full bg-gray-900/50 border border-gray-700 rounded-lg px-4 py-2 text-white"
                       />
@@ -552,7 +553,10 @@ const DeveloperProfile = () => {
                       <input
                         value={editData?.linkedinUrl || ""}
                         onChange={(e) =>
-                          setEditData({ ...editData, linkedinUrl: e.target.value })
+                          setEditData({
+                            ...editData,
+                            linkedinUrl: e.target.value,
+                          })
                         }
                         className="w-full bg-gray-900/50 border border-gray-700 rounded-lg px-4 py-2 text-white"
                       />
@@ -578,7 +582,9 @@ const DeveloperProfile = () => {
                         Choose File
                       </label>
                       {selectedFile && (
-                        <p className="mt-4 text-gray-400">{selectedFile.name}</p>
+                        <p className="mt-4 text-gray-400">
+                          {selectedFile.name}
+                        </p>
                       )}
                     </div>
                     {developer.resumeUrl && (
