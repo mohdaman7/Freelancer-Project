@@ -6,8 +6,9 @@ import {
   AlertCircle,
   Mail,
   AlertTriangle,
-  Clock
+  Clock,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
@@ -17,6 +18,7 @@ const NotificationPage = () => {
   const [error, setError] = useState(null);
   const [activeFilter, setActiveFilter] = useState('all');
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   // Fetch Notifications
   useEffect(() => {
@@ -71,6 +73,11 @@ const NotificationPage = () => {
       default:
         return <Mail className="w-6 h-6 text-blue-400" />;
     }
+  };
+
+  // Handle Notification Click
+  const handleNotificationClick = (id) => {
+    navigate(`/notifications/${id}`);
   };
 
   // Loading State
@@ -170,9 +177,10 @@ const NotificationPage = () => {
             {filteredNotifications.map((notification) => (
               <div
                 key={notification._id}
+                onClick={() => handleNotificationClick(notification._id)}
                 className={`
                   group flex items-start p-4 rounded-xl transition-all
-                  bg-gray-800/50 backdrop-blur-sm hover:bg-gray-700/50
+                  bg-gray-800/50 backdrop-blur-sm hover:bg-gray-700/50 cursor-pointer
                   ${notification.status !== 'read' && 'border-l-4 border-indigo-500'}
                 `}
               >
@@ -192,14 +200,17 @@ const NotificationPage = () => {
                     </p>
                     {notification.status !== 'read' && (
                       <button 
-                        onClick={() => markAsRead(notification._id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          markAsRead(notification._id);
+                        }}
                         className="text-gray-400 hover:text-indigo-400 transition-colors ml-4"
                       >
                         <CheckCircle className="w-5 h-5" />
                       </button>
                     )}
                   </div>
-                  
+
                   {/* Metadata */}
                   <div className="flex items-center text-sm text-gray-400 mt-2">
                     <span className="flex items-center">
