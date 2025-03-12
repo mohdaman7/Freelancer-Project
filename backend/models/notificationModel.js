@@ -30,6 +30,11 @@ const notificationSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  status: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
+    default: "pending",
+  },
 });
 
 const Notification = mongoose.model("Notification", notificationSchema);

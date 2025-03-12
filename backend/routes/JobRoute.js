@@ -11,7 +11,7 @@ import { authenticateUser } from "../middlewares/userMiddleware.js";
 
 const router = express.Router();
 
-// Export a function that accepts io
+
 export const jobRoutes = (io) => {
   router.get("/jobs", getJobs);
   router.get("/job/:id", getJobById);

@@ -34,7 +34,7 @@ const AppUser = () => {
         <Route path='/freelancer-profile/:developerId' element={<DeveloperProfile/>}/>
         <Route path='/login' element={<LoginSelection/>}/>
         <Route path='/notification' element={<Notification/>}/>
-        <Route path='/notification/:id' element={<NotificationDetail/>}/>
+        <Route path='/notifications/:id' element={<NotificationDetail/>}/>
     </Routes>
   )
 }
