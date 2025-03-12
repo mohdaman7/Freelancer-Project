@@ -5,7 +5,8 @@ import {
   getUnreadCount,
   approveNotification,
   rejectNotification,
-  getNotificationById
+  getNotificationById,
+  confirmPayment
 } from '../controllers/notificationController.js'
 import { authenticateUser } from '../middlewares/userMiddleware.js'
 
@@ -17,5 +18,6 @@ router.patch('/:id/read', authenticateUser(['client', 'developer', 'admin']), ma
 router.patch('/:id/approve', authenticateUser(['client']), approveNotification);
 router.patch('/:id/reject', authenticateUser(['client']), rejectNotification);
 router.get('/:id', authenticateUser(['client', 'developer', 'admin']), getNotificationById);
+router.post('/confirm', authenticateUser(['client']), confirmPayment)
 
 export default router;

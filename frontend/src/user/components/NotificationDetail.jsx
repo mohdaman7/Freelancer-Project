@@ -6,6 +6,20 @@ import { toast } from "sonner";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
+const loadRazorpayScript = (src) => {
+  return new Promise((resolve) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = () => {
+      resolve(true);
+    };
+    script.onerror = () => {
+      resolve(false);
+    };
+    document.body.appendChild(script);
+  });
+};
+
 const NotificationDetail = () => {
   const [notification, setNotification] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -14,7 +28,6 @@ const NotificationDetail = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  // Fetch Notification Details
   useEffect(() => {
     const fetchNotification = async () => {
       try {
@@ -38,20 +51,78 @@ const NotificationDetail = () => {
     }
   }, [id, token]);
 
-  // Handle Approve/Reject
+  const handlePayment = async (orderDetails) => {
+    const isScriptLoaded = await loadRazorpayScript('https://checkout.razorpay.com/v1/checkout.js');
+    if (!isScriptLoaded) {
+      toast.error('Failed to load Razorpay SDK');
+      return;
+    }
+
+    const options = {
+      key: orderDetails.razorpayKey,
+      amount: orderDetails.amount,
+      currency: orderDetails.currency,
+      name: "Freelancer WebApp",
+      description: "Proposal Payment",
+      order_id: orderDetails.orderId,
+      handler: async (response) => {
+        try {
+          await axios.post(`http://localhost:3000/api/notifications/confirm`, response, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          toast.success('Payment successful!');
+          navigate("/notification");
+        } catch (error) {
+          toast.error('Payment verification failed');
+        }
+      },
+      prefill: {
+        email: "user@example.com", // Replace with actual user email from your auth state
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  };
+
   const handleAction = async (action) => {
     try {
-      await axios.patch(`http://localhost:3000/api/notifications/${id}/${action}`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      if (action === 'approve') {
+        const response = await axios.patch(
+          `http://localhost:3000/api/notifications/${id}/approve`, 
+          {}, 
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
 
-      // Refresh notification details
-      const response = await axios.get(`http://localhost:3000/api/notifications/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setNotification(response.data.data);
+        // Handle Razorpay integration
+        if (response.data.orderId) {
+          await handlePayment({
+            orderId: response.data.orderId,
+            razorpayKey: response.data.razorpayKey,
+            amount: response.data.amount,
+            currency: response.data.currency
+          });
+        }
 
-      // Show success toast
+        // Refresh notification status
+        const updatedResponse = await axios.get(`http://localhost:3000/api/notifications/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setNotification(updatedResponse.data.data);
+      } else {
+        await axios.patch(`http://localhost:3000/api/notifications/${id}/reject`, {}, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        const response = await axios.get(`http://localhost:3000/api/notifications/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setNotification(response.data.data);
+      }
+
       toast.success(`Notification ${action === 'approve' ? 'approved' : 'rejected'} successfully!`);
     } catch (error) {
       console.error("Failed to perform action", error);

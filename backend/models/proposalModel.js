@@ -25,8 +25,16 @@ const proposalSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "accepted", "rejected"],
+    enum: ['pending', 'approved', 'rejected', 'accepted'],
     default: "pending",
+  },
+  paymentOrderId: {
+    type: String, 
+    default: null,
+  },
+  paymentId: {
+    type: String, 
+    default: null,
   },
   createdAt: {
     type: Date,

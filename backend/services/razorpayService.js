@@ -6,23 +6,23 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_SECRET
 });
 
-// Create a Razorpay order
-export const createRazorpayOrder = async (amount, receipt) => {
+
+export const createRazorpayOrder = async (amount, receipt, notes = {}) => {
   try {
     const order = await razorpay.orders.create({
       amount: amount * 100, // Convert to paise
       currency: "INR",
       receipt: receipt,
-      payment_capture: 1
+      payment_capture: 1, // Auto-capture payment
+      notes: notes // Add metadata for traceability
     });
     return order;
   } catch (error) {
     console.error("Error creating Razorpay order:", error);
-    throw new Error("Failed to create Razorpay order");
+    throw new Error(`Failed to create Razorpay order: ${error.message}`);
   }
 };
 
-// Verify Razorpay payment signature
 export const verifyPaymentSignature = (orderId, paymentId, signature) => {
   try {
     const generatedSignature = crypto
@@ -30,10 +30,13 @@ export const verifyPaymentSignature = (orderId, paymentId, signature) => {
       .update(orderId + "|" + paymentId)
       .digest('hex');
 
+    console.log("[Verify Signature] Generated Signature:", generatedSignature); // Debug log
+    console.log("[Verify Signature] Received Signature:", signature); // Debug log
+
     return generatedSignature === signature;
   } catch (error) {
     console.error("Error verifying payment signature:", error);
-    throw new Error("Failed to verify payment signature");
+    return false; 
   }
 };
 

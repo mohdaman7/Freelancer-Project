@@ -107,28 +107,33 @@ export const approveNotification = async (req, res) => {
       .populate("proposalId")
       .populate("jobId");
 
+    // Validate notification and proposal
     if (!notification || notification.userId.toString() !== req.user.id) {
       return res.status(404).json({ error: 'Notification not found' });
     }
-
     const proposal = notification.proposalId;
     if (!proposal || proposal.status !== 'pending') {
       return res.status(400).json({ error: 'Invalid proposal status' });
     }
 
-    // Create Razorpay order
+    // Create Razorpay order with proper metadata
     const order = await createRazorpayOrder(
       proposal.proposedBudget,
-      `proposal_${proposal._id}`
+      "INR",
+      {
+        proposalId: proposal._id.toString(), // Add proposal ID to Razorpay notes
+        jobId: notification.jobId._id.toString()
+      }
     );
 
-    // Save payment details to proposal
-    proposal.paymentOrderId = order.id;
-    await proposal.save();
+    // Update proposal with Razorpay order ID
+    proposal.paymentOrderId = order.id; // Use Razorpay's order.id
+    proposal.status = "approved"; // Explicitly update proposal status
+    await proposal.save(); // Ensure this save operation succeeds
 
     res.status(200).json({
       status: "success",
-      orderId: order.id,
+      orderId: order.id, // Send Razorpay's order ID
       razorpayKey: process.env.RAZORPAY_KEY_ID,
       amount: proposal.proposedBudget,
       currency: "INR"
@@ -139,12 +144,14 @@ export const approveNotification = async (req, res) => {
   }
 };
 
+
+
+
 export const confirmPayment = async (req, res) => {
   try {
     const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
-    const proposal = await Proposal.findOne({ paymentOrderId: razorpay_order_id })
-      .populate('jobId')
-      .populate('developerId');
+
+    console.log("[Confirm Payment] Order ID:", razorpay_order_id); // Debug log
 
     // Verify payment signature
     const isValidSignature = verifyPaymentSignature(
@@ -155,6 +162,18 @@ export const confirmPayment = async (req, res) => {
 
     if (!isValidSignature) {
       return res.status(400).json({ error: 'Invalid payment signature' });
+    }
+
+    // Find the proposal associated with the order
+    const proposal = await Proposal.findOne({ paymentOrderId: razorpay_order_id })
+      .populate('jobId')
+      .populate('developerId');
+
+    console.log("[Confirm Payment] Proposal Found:", proposal); // Debug log
+
+    if (!proposal) {
+      console.error("[Confirm Payment] Proposal not found for order ID:", razorpay_order_id);
+      return res.status(404).json({ error: 'Proposal not found' });
     }
 
     // Update proposal status
@@ -195,6 +214,7 @@ export const confirmPayment = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 export const rejectNotification = async (req, res) => {
   try {
