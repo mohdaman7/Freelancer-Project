@@ -38,7 +38,7 @@ const clientSchema = new mongoose.Schema({
   }
 });
 
-// Check if the model already exists before creating it
+
 const Client = mongoose.models.Client || mongoose.model("Client", clientSchema);
 
 export default Client;

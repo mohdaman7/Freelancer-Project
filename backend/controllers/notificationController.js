@@ -5,7 +5,12 @@ import { createRazorpayOrder, verifyPaymentSignature } from '../services/razorpa
 
 export const getNotifications = async (req, res) => {
   try {
-    const notifications = await Notification.find({ userId: req.user.id })
+    const role = req.headers['x-user-role'];
+    const query = role === 'client' 
+      ? { clientId: req.user.id }
+      : { developerId: req.user.id };
+
+    const notifications = await Notification.find(query)
       .sort({ createdAt: -1 })
       .lean();
 
@@ -24,10 +29,11 @@ export const getNotifications = async (req, res) => {
 
 export const getNotificationById = async (req, res) => {
   try {
-    const notification = await Notification.findOne({
-      _id: req.params.id,
-      userId: req.user.id
-    }).lean();
+    const query = req.user.role === 'client'
+      ? { _id: req.params.id, clientId: req.user.id }
+      : { _id: req.params.id, developerId: req.user.id };
+
+    const notification = await Notification.findOne(query).lean();
 
     if (!notification) {
       return res.status(404).json({
@@ -51,8 +57,12 @@ export const getNotificationById = async (req, res) => {
 
 export const markNotificationAsRead = async (req, res) => {
   try {
+    const query = req.user.role === 'client'
+      ? { _id: req.params.id, clientId: req.user.id }
+      : { _id: req.params.id, developerId: req.user.id };
+
     const notification = await Notification.findOneAndUpdate(
-      { _id: req.params.id, userId: req.user.id },
+      query,
       { status: 'read' },
       { new: true }
     );
@@ -79,10 +89,11 @@ export const markNotificationAsRead = async (req, res) => {
 
 export const getUnreadCount = async (req, res) => {
   try {
-    const count = await Notification.countDocuments({
-      userId: req.user.id,
-      status: { $ne: 'read' }
-    });
+    const query = req.user.role === 'client'
+      ? { clientId: req.user.id, status: { $ne: 'read' } }
+      : { developerId: req.user.id, status: { $ne: 'read' } };
+
+    const count = await Notification.countDocuments(query);
 
     res.status(200).json({
       status: 'success',
@@ -107,33 +118,34 @@ export const approveNotification = async (req, res) => {
       .populate("proposalId")
       .populate("jobId");
 
-    // Validate notification and proposal
-    if (!notification || notification.userId.toString() !== req.user.id) {
+    // Validate client ownership
+    if (!notification || notification.clientId.toString() !== req.user.id) {
       return res.status(404).json({ error: 'Notification not found' });
     }
+
     const proposal = notification.proposalId;
     if (!proposal || proposal.status !== 'pending') {
       return res.status(400).json({ error: 'Invalid proposal status' });
     }
 
-    // Create Razorpay order with proper metadata
+    // Create Razorpay order
     const order = await createRazorpayOrder(
       proposal.proposedBudget,
       "INR",
       {
-        proposalId: proposal._id.toString(), // Add proposal ID to Razorpay notes
+        proposalId: proposal._id.toString(),
         jobId: notification.jobId._id.toString()
       }
     );
 
-    // Update proposal with Razorpay order ID
-    proposal.paymentOrderId = order.id; // Use Razorpay's order.id
-    proposal.status = "approved"; // Explicitly update proposal status
-    await proposal.save(); // Ensure this save operation succeeds
+    // Update proposal
+    proposal.paymentOrderId = order.id;
+    proposal.status = "approved";
+    await proposal.save();
 
     res.status(200).json({
       status: "success",
-      orderId: order.id, // Send Razorpay's order ID
+      orderId: order.id,
       razorpayKey: process.env.RAZORPAY_KEY_ID,
       amount: proposal.proposedBudget,
       currency: "INR"
@@ -144,16 +156,11 @@ export const approveNotification = async (req, res) => {
   }
 };
 
-
-
-
 export const confirmPayment = async (req, res) => {
   try {
     const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
 
-    console.log("[Confirm Payment] Order ID:", razorpay_order_id); // Debug log
-
-    // Verify payment signature
+    // Verify signature
     const isValidSignature = verifyPaymentSignature(
       razorpay_order_id,
       razorpay_payment_id,
@@ -164,41 +171,37 @@ export const confirmPayment = async (req, res) => {
       return res.status(400).json({ error: 'Invalid payment signature' });
     }
 
-    // Find the proposal associated with the order
+    // Find proposal
     const proposal = await Proposal.findOne({ paymentOrderId: razorpay_order_id })
       .populate('jobId')
       .populate('developerId');
 
-    console.log("[Confirm Payment] Proposal Found:", proposal); // Debug log
-
     if (!proposal) {
-      console.error("[Confirm Payment] Proposal not found for order ID:", razorpay_order_id);
       return res.status(404).json({ error: 'Proposal not found' });
     }
 
-    // Update proposal status
+    // Update proposal
     proposal.status = 'accepted';
     proposal.paymentId = razorpay_payment_id;
     await proposal.save();
 
-    // Update job status and earnings
+    // Update job
     const job = await Job.findById(proposal.jobId);
     job.status = 'In Progress';
     job.earnings.total += proposal.proposedBudget;
     job.earnings.pending += proposal.proposedBudget;
-
+    
     job.transactions.push({
       description: `Payment for proposal ${proposal._id}`,
       amount: proposal.proposedBudget,
       status: 'Completed',
       paymentId: razorpay_payment_id
     });
-
     await job.save();
 
-    // Create acceptance notification for developer
+    // Notify developer
     await Notification.create({
-      userId: proposal.developerId._id,
+      developerId: proposal.developerId._id,
       message: `Your proposal for "${job.title}" has been accepted! Payment received: ₹${proposal.proposedBudget}`,
       type: 'payment',
       jobId: job._id,
@@ -215,7 +218,6 @@ export const confirmPayment = async (req, res) => {
   }
 };
 
-
 export const rejectNotification = async (req, res) => {
   try {
     const notification = await Notification.findByIdAndUpdate(
@@ -226,7 +228,8 @@ export const rejectNotification = async (req, res) => {
       .populate("proposalId")
       .populate("jobId");
 
-    if (!notification || notification.userId.toString() !== req.user.id) {
+    // Validate client ownership
+    if (!notification || notification.clientId.toString() !== req.user.id) {
       return res.status(404).json({ error: 'Notification not found' });
     }
 
@@ -234,9 +237,9 @@ export const rejectNotification = async (req, res) => {
     proposal.status = 'rejected';
     await proposal.save();
 
-    // Create rejection notification for developer
+    // Notify developer
     await Notification.create({
-      userId: proposal.developerId,
+      developerId: proposal.developerId,
       message: `Your proposal for "${notification.jobId.title}" has been rejected.`,
       type: 'rejection',
       jobId: notification.jobId._id,

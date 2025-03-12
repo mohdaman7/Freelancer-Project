@@ -104,24 +104,11 @@ export const submitProposal = (io) => async (req, res) => {
     const jobId = req.params.id;
     const developerId = req.user.id;
 
-    // Validate required fields
-    if (!proposalText || !proposedBudget || !proposedDeadline) {
-      return res.status(400).json({
-        status: "error",
-        message: "All fields are required.",
-      });
-    }
-
-    // Check if the job exists
     const job = await Job.findById(jobId);
     if (!job) {
-      return res.status(404).json({
-        status: "error",
-        message: "Job not found",
-      });
+      return res.status(404).json({ message: "Job not found" });
     }
 
-    // Create and save the proposal
     const newProposal = new Proposal({
       jobId,
       developerId,
@@ -132,14 +119,12 @@ export const submitProposal = (io) => async (req, res) => {
     });
 
     const savedProposal = await newProposal.save();
-
-    // Add the proposal to the job's proposals array
     job.proposals.push(savedProposal._id);
     await job.save();
 
-    // Create a notification for the client
+    // Create client notification
     const notification = new Notification({
-      userId: job.clientId,
+      clientId: job.clientId,
       message: `New proposal for "${job.title}"`,
       type: "newProposal",
       jobId: job._id,
@@ -147,13 +132,11 @@ export const submitProposal = (io) => async (req, res) => {
     });
     await notification.save();
 
-    // Emit a real-time notification to the client
-    io.emit("notification", {
-      type: "newProposal",
-      userId: job.clientId.toString(),
-      message: `New proposal for "${job.title}"`,
-      jobId: job._id,
-      proposalId: savedProposal._id,
+    // Real-time update
+    io.emit("newProposal", {
+      clientId: job.clientId.toString(),
+      message: `New proposal for ${job.title}`,
+      proposalId: savedProposal._id
     });
 
     res.status(201).json({
@@ -169,6 +152,8 @@ export const submitProposal = (io) => async (req, res) => {
     });
   }
 };
+
+
 
 export const handleProposalDecision = (io) => async (req, res) => {
   try {

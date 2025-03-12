@@ -18,6 +18,7 @@ const NotificationPage = () => {
   const [error, setError] = useState(null);
   const [activeFilter, setActiveFilter] = useState('all');
   const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role")
   const navigate = useNavigate();
 
   // Fetch Notifications
@@ -25,7 +26,10 @@ const NotificationPage = () => {
     const fetchNotifications = async () => {
       try {
         const response = await axios.get("http://localhost:3000/api/notifications", {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'X-User-Role': role
+          }
         });
 
         setNotifications(response.data.data || []);
@@ -36,12 +40,11 @@ const NotificationPage = () => {
       }
     };
 
-    if (token) {
-      fetchNotifications();
-    }
-  }, [token]);
+    fetchNotifications();
+    
+  }, [token,role]);
 
-  // Mark Notification as Read
+
   const markAsRead = async (id) => {
     try {
       await axios.patch(`http://localhost:3000/api/notifications/${id}/read`, {}, {

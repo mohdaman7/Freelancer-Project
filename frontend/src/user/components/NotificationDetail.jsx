@@ -35,7 +35,7 @@ const NotificationDetail = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
 
-        console.log("API Response:", response.data); // Log the response
+        console.log("API Response:", response.data); 
         setNotification(response.data.data);
         setLoading(false);
       } catch (error) {
@@ -213,7 +213,7 @@ const NotificationDetail = () => {
                 )}
               </div>
 
-              {/* Details */}
+
               <div className="flex-1">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
                   {notification.message}
@@ -238,7 +238,7 @@ const NotificationDetail = () => {
               </div>
             </div>
 
-            {/* Actions */}
+
             {status === 'pending' && (
               <div className="mt-6 space-y-4">
                 <h3 className="text-sm font-medium text-gray-700">Request Action</h3>

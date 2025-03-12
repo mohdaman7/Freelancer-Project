@@ -8,7 +8,7 @@ const proposalSchema = new mongoose.Schema({
   },
   developerId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Developer",
     required: true,
   },
   proposalText: {

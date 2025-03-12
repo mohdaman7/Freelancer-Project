@@ -79,10 +79,15 @@ const JobDetailsPage = () => {
       await axios.post(
         `http://localhost:3000/api/jobs/job/${id}/proposal`,
         proposal,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'X-User-Role': 'developer'
+          } 
+        }
       );
 
-      // Emit new proposal event
+      
       socket.emit("newProposal", {
         jobId: id,
         jobTitle: job.title,
