@@ -12,6 +12,8 @@ import clientRoute from "./routes/clientRoute.js";
 import developerRoute from "./routes/developerRoute.js";
 import { jobRoutes } from "./routes/JobRoute.js";
 import notificationRoute from "./routes/notificationRoute.js";
+import chatRoute from "./routes/chatRoute.js"; 
+import jwt from "jsonwebtoken";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -31,31 +33,74 @@ const server = http.createServer(app);
 export const io = new Server(server, {
   cors: {
     origin: FRONTEND_URL,
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "DELETE"], 
+    credentials: true 
   },
+  transports: ['websocket', 'polling'] 
 });
+
+
+io.engine.on("connection_error", (err) => {
+  console.error("Socket.IO connection error:", err);
+});
+
+
+io.use((socket, next) => {
+  const token = socket.handshake.auth.token;
+  if (!token) return next(new Error("Authentication error"));
+  
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) return next(new Error("Authentication error"));
+    socket.user = {
+      id: decoded.id,
+      role: decoded.role
+    };
+    next();
+  });
+});
+
+
+io.on("connection", (socket) => {
+  console.log(`User connected: ${socket.user.id} (${socket.user.role})`);
+
+  socket.on("join-chat", (proposalId) => {
+    socket.join(proposalId);
+    console.log(`User ${socket.user.id} joined chat ${proposalId}`);
+  });
+
+  socket.on("send-message", ({ proposalId, message }) => {
+    io.to(proposalId).emit("message", {
+      ...message,
+      senderId: socket.user.id,
+      timestamp: new Date()
+    });
+  });
+
+  socket.on("typing", (proposalId) => {
+    socket.to(proposalId).emit("typing", socket.user.id);
+  });
+
+  socket.on("stop-typing", (proposalId) => {
+    socket.to(proposalId).emit("stop-typing", socket.user.id);
+  });
+
+  socket.on("disconnect", () => {
+    console.log(`User disconnected: ${socket.user.id}`);
+  });
+});
+
 
 app.use(cors({ origin: FRONTEND_URL, credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-io.on("connection", (socket) => {
-  console.log("Client connected:", socket.id);
-
-  socket.on("disconnect", () => {
-    console.log("Client disconnected:", socket.id);
-  });
-});
-
-
 app.use("/api/admin", adminRoute);
 app.use("/api/client", clientRoute);
 app.use("/api/developers", developerRoute);
 app.use("/api/jobs", jobRoutes(io));
 app.use("/api/notifications", notificationRoute);
-
+app.use("/api/chat", chatRoute);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));

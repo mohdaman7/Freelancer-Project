@@ -58,12 +58,19 @@ const JobDetailsPage = () => {
 
  
   useEffect(() => {
-    const handleConnect = () => setIsConnected(true);
-    const handleDisconnect = () => setIsConnected(false);
-
+    const handleConnect = () => {
+      setIsConnected(true);
+      console.log("Socket connected");
+    };
+  
+    const handleDisconnect = () => {
+      setIsConnected(false);
+      console.log("Socket disconnected");
+    };
+  
     socket.on("connect", handleConnect);
     socket.on("disconnect", handleDisconnect);
-
+  
     return () => {
       socket.off("connect", handleConnect);
       socket.off("disconnect", handleDisconnect);

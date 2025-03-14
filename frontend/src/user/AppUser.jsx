@@ -15,6 +15,7 @@ import DeveloperProfile from './pages/ProfilePage';
 import LoginSelection from './components/Login';
 import Notification from './components/Notification';
 import NotificationDetail from './components/NotificationDetail';
+import ChatPage from './pages/ChatPage';
 
 const AppUser = () => {
   return (
@@ -35,6 +36,7 @@ const AppUser = () => {
         <Route path='/login' element={<LoginSelection/>}/>
         <Route path='/notification' element={<Notification/>}/>
         <Route path='/notifications/:id' element={<NotificationDetail/>}/>
+        <Route path='/chat/:proposalId' element={<ChatPage/>}/>
     </Routes>
   )
 }

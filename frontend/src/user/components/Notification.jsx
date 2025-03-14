@@ -21,8 +21,7 @@ const NotificationPage = () => {
   const role = localStorage.getItem("role");
   const navigate = useNavigate();
   
-  console.log(error)
-
+  console.log(error);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -71,13 +70,11 @@ const NotificationPage = () => {
     }
   };
 
-
   const filteredNotifications = notifications.filter(notification => {
     if (activeFilter === 'unread') return notification.status !== 'read';
     if (activeFilter === 'read') return notification.status === 'read';
     return true;
   });
-
 
   const getNotificationDetails = (type) => {
     switch(type) {
@@ -104,11 +101,15 @@ const NotificationPage = () => {
     }
   };
 
-
-  const handleNotificationClick = (id) => {
-    navigate(`/notifications/${id}`);
+  const handleNotificationClick = (id, type, proposalId) => {
+    // navigate(`/chat/${proposalId}`);
+    // console.log(type,'typeeeeeeeeeeeeeeeeee')
+    if (type === 'proposalApproved' && proposalId) {
+      navigate(`/chat/${proposalId}`);
+    } else {
+      navigate(`/notifications/${id}`);
+    }
   };
-
 
   if (loading) {
     return (
@@ -147,14 +148,10 @@ const NotificationPage = () => {
     );
   }
 
- 
-
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
       <Navbar />
       <div className="container mx-auto px-4 py-12 max-w-3xl">
-        {/* Header */}
         <div className="flex justify-between items-center mb-8 pt-16">
           <div>
             <h1 className="text-3xl font-bold text-gray-100 flex items-center">
@@ -185,7 +182,6 @@ const NotificationPage = () => {
           )}
         </div>
 
-        {/* Filters */}
         <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg shadow-sm p-1 flex mb-6 border border-gray-700 w-fit">
           {['all', 'unread', 'read'].map((filter) => (
             <button
@@ -204,7 +200,6 @@ const NotificationPage = () => {
           ))}
         </div>
 
-        {/* Notifications List */}
         {filteredNotifications.length === 0 ? (
           <div className="text-center py-16 bg-gray-800/50 backdrop-blur-sm rounded-lg shadow-lg border border-gray-700">
             <Bell className="h-20 w-20 text-gray-500 mx-auto mb-4" />
@@ -226,7 +221,7 @@ const NotificationPage = () => {
               return (
                 <div
                   key={notification._id}
-                  onClick={() => handleNotificationClick(notification._id)}
+                  onClick={() => handleNotificationClick(notification._id, notification.type, notification.proposalId)}
                   className={`
                     group flex items-start p-4 rounded-lg transition-all border
                     bg-gray-800/50 backdrop-blur-sm hover:bg-gray-700/50 cursor-pointer
@@ -236,12 +231,10 @@ const NotificationPage = () => {
                     }
                   `}
                 >
-                  {/* Icon */}
                   <div className={`mr-4 p-2 rounded-lg ${color} border`}>
                     {icon}
                   </div>
 
-                  {/* Content */}
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
                       <p className={`
@@ -263,7 +256,6 @@ const NotificationPage = () => {
                       )}
                     </div>
 
-                    {/* Metadata */}
                     <div className="flex items-center text-sm text-gray-400 mt-2">
                       <span className="flex items-center">
                         <Clock className="w-4 h-4 mr-1" />
