@@ -39,7 +39,7 @@ const JobDetailsPage = () => {
   const developerName = localStorage.getItem("developerName");
   const navigate = useNavigate();
 
-  // Fetch job details
+  
   useEffect(() => {
     const fetchJob = async () => {
       try {
@@ -56,7 +56,7 @@ const JobDetailsPage = () => {
     fetchJob();
   }, [id]);
 
-  // Handle socket connection
+ 
   useEffect(() => {
     const handleConnect = () => setIsConnected(true);
     const handleDisconnect = () => setIsConnected(false);
@@ -70,7 +70,7 @@ const JobDetailsPage = () => {
     };
   }, []);
 
-  // Handle proposal submission
+ 
   const handleSubmitProposal = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -101,7 +101,6 @@ const JobDetailsPage = () => {
         icon: <CheckCircle className="w-5 h-5 text-green-500" />,
       });
 
-      // Reset form
       setProposal({
         proposalText: "",
         proposedBudget: "",
@@ -135,7 +134,7 @@ const JobDetailsPage = () => {
     <div className="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white">
       <Navbar />
 
-      {/* Connection Status Indicator */}
+
       {!isConnected && (
         <div className="fixed top-4 right-4 p-3 bg-red-500/20 text-red-400 rounded-lg flex items-center gap-2 z-50">
           <XCircle className="w-5 h-5" />
@@ -152,7 +151,7 @@ const JobDetailsPage = () => {
           Back to Jobs
         </Link>
 
-        {/* Job Header Section */}
+
         <div className="bg-gray-800 rounded-xl shadow-2xl overflow-hidden">
           <div className="p-8 sm:p-10 bg-gradient-to-r from-blue-600 to-purple-600 relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
@@ -173,10 +172,10 @@ const JobDetailsPage = () => {
             </div>
           </div>
 
-          {/* Job Details Content */}
+
           <div className="p-8 sm:p-10">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-              {/* Budget Card */}
+
               <div className="bg-gray-700 p-6 rounded-lg hover:scale-[1.02] transition-transform">
                 <div className="flex items-center mb-2">
                   <DollarSign className="w-6 h-6 text-green-400 mr-2" />
@@ -185,7 +184,7 @@ const JobDetailsPage = () => {
                 <p className="text-2xl font-bold">${job.budget}</p>
               </div>
 
-              {/* Deadline Card */}
+
               <div className="bg-gray-700 p-6 rounded-lg hover:scale-[1.02] transition-transform">
                 <div className="flex items-center mb-2">
                   <Clock className="w-6 h-6 text-yellow-400 mr-2" />
@@ -200,7 +199,7 @@ const JobDetailsPage = () => {
                 </p>
               </div>
 
-              {/* Experience Level Card */}
+
               <div className="bg-gray-700 p-6 rounded-lg hover:scale-[1.02] transition-transform">
                 <div className="flex items-center mb-2">
                   <Star className="w-6 h-6 text-yellow-400 mr-2" />
@@ -210,7 +209,6 @@ const JobDetailsPage = () => {
               </div>
             </div>
 
-            {/* Project Description */}
             <section className="mb-10">
               <h2 className="text-2xl font-bold mb-4 flex items-center">
                 <FileText className="w-6 h-6 mr-2 text-blue-400" />
@@ -219,7 +217,7 @@ const JobDetailsPage = () => {
               <p className="text-gray-300 leading-relaxed">{job.description}</p>
             </section>
 
-            {/* Required Skills */}
+
             <section className="mb-10">
               <h2 className="text-2xl font-bold mb-4 flex items-center">
                 <Code className="w-6 h-6 mr-2 text-purple-400" />
@@ -237,7 +235,7 @@ const JobDetailsPage = () => {
               </div>
             </section>
 
-            {/* About the Client */}
+
             <section className="mb-10">
               <h2 className="text-2xl font-bold mb-4 flex items-center">
                 <User className="w-6 h-6 mr-2 text-green-400" />
@@ -257,7 +255,7 @@ const JobDetailsPage = () => {
               </div>
             </section>
 
-            {/* Proposal Form */}
+
             <section>
               <h2 className="text-2xl font-bold mb-6 flex items-center">
                 <Send className="w-6 h-6 mr-2 text-blue-400" />

@@ -1,7 +1,16 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { Check, XCircle, Clock, AlertTriangle, Mail, Loader, X } from "lucide-react";
+import { 
+  Check, 
+  XCircle, 
+  Clock, 
+  AlertTriangle, 
+  Mail, 
+  X,
+  ArrowLeft,
+  CheckCircle 
+} from "lucide-react";
 import { toast } from "sonner";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
@@ -35,11 +44,9 @@ const NotificationDetail = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
 
-        console.log("API Response:", response.data); 
         setNotification(response.data.data);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching notification:", error); // Log the error
         setError(error.response?.data?.message || 'Failed to fetch notification');
         setLoading(false);
         toast.error("Failed to fetch notification details");
@@ -62,7 +69,7 @@ const NotificationDetail = () => {
       key: orderDetails.razorpayKey,
       amount: orderDetails.amount,
       currency: orderDetails.currency,
-      name: "Freelancer WebApp",
+      name: "CodeMesh",
       description: "Proposal Payment",
       order_id: orderDetails.orderId,
       handler: async (response) => {
@@ -77,10 +84,10 @@ const NotificationDetail = () => {
         }
       },
       prefill: {
-        email: "user@example.com", // Replace with actual user email from your auth state
+        email: "user@example.com",
       },
       theme: {
-        color: "#3399cc",
+        color: "#5046e5",
       },
     };
 
@@ -97,7 +104,6 @@ const NotificationDetail = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        // Handle Razorpay integration
         if (response.data.orderId) {
           await handlePayment({
             orderId: response.data.orderId,
@@ -107,7 +113,6 @@ const NotificationDetail = () => {
           });
         }
 
-        // Refresh notification status
         const updatedResponse = await axios.get(`http://localhost:3000/api/notifications/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -125,73 +130,50 @@ const NotificationDetail = () => {
 
       toast.success(`Notification ${action === 'approve' ? 'approved' : 'rejected'} successfully!`);
     } catch (error) {
-      console.error("Failed to perform action", error);
       toast.error(error.response?.data?.message || "Action failed");
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-        <Loader className="animate-spin h-12 w-12 text-indigo-500" />
-      </div>
-    );
-  }
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-        <Navbar />
-        <div className="container mx-auto px-4 py-12 max-w-2xl text-center">
-          <div className="inline-block p-6 bg-red-100 rounded-full mb-6">
-            <XCircle className="h-12 w-12 text-red-500" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
-            Error Loading Notification
-          </h2>
-          <p className="text-gray-600 mb-6">{error}</p>
-          <button 
-            onClick={() => navigate("/notification")}
-            className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all font-medium"
-          >
-            Back to Notifications
-          </button>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
 
   if (!notification) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-        <p className="text-gray-600">No notification found.</p>
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <p className="text-gray-400">No notification found.</p>
       </div>
     );
   }
 
-  const status = notification?.status || "pending"; // Fallback to "pending" if status is null/undefined
+  const status = notification?.status || "pending";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gray-900 text-white">
       <Navbar />
-      <div className="container mx-auto px-4 py-12 max-w-2xl">
+      <div className="container mx-auto px-4 py-8 max-w-3xl pt-36 pb-20">
+        <button 
+          onClick={() => navigate("/notification")}
+          className="mb-6 flex items-center gap-2 text-blue-500 hover:text-blue-400"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Notifications
+        </button>
+        
         {/* Notification Card */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
           {/* Header */}
-          <div className="p-6 border-b border-gray-100">
+          <div className="p-6 border-b border-gray-700">
             <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-xl font-bold">
                 Notification Details
               </h1>
               <button
                 onClick={() => navigate("/notification")}
-                className="p-2 hover:bg-gray-50 rounded-full transition-all"
+                className="p-2 hover:bg-gray-700 rounded-full transition-all"
               >
-                <X className="w-6 h-6 text-gray-500 hover:text-gray-700" />
+                <X className="w-5 h-5 text-gray-400" />
               </button>
             </div>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-gray-400 mt-1">
               ID: {notification._id}
             </p>
           </div>
@@ -200,10 +182,7 @@ const NotificationDetail = () => {
           <div className="p-6">
             <div className="flex items-start gap-4">
               {/* Icon */}
-              <div className={`p-3 rounded-lg ${
-                notification.type === 'alert' ? 'bg-red-100' :
-                notification.type === 'reminder' ? 'bg-yellow-100' : 'bg-blue-100'
-              }`}>
+              <div className="p-3 rounded-lg bg-gray-700">
                 {notification.type === 'alert' ? (
                   <AlertTriangle className="w-6 h-6 text-red-500" />
                 ) : notification.type === 'reminder' ? (
@@ -213,12 +192,11 @@ const NotificationDetail = () => {
                 )}
               </div>
 
-
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg font-semibold mb-2">
                   {notification.message}
                 </h3>
-                <div className="text-sm text-gray-500">
+                <div className="text-sm text-gray-400">
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4" />
                     <span>
@@ -231,67 +209,63 @@ const NotificationDetail = () => {
                     </span>
                   </div>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="w-4 h-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full" />
+                    <span className="w-3 h-3 bg-blue-500 rounded-full" />
                     <span className="capitalize">{notification.type}</span>
                   </div>
                 </div>
               </div>
             </div>
 
-
-            {status === 'pending' && (
-              <div className="mt-6 space-y-4">
-                <h3 className="text-sm font-medium text-gray-700">Request Action</h3>
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => handleAction('approve')}
-                    className="flex-1 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all flex items-center justify-center gap-2"
-                  >
-                    <Check className="w-5 h-5" />
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => handleAction('reject')}
-                    className="flex-1 px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all flex items-center justify-center gap-2"
-                  >
-                    <XCircle className="w-5 h-5" />
-                    Reject
-                  </button>
-                </div>
-              </div>
-            )}
-
             {/* Status */}
             {status !== 'pending' && (
               <div className={`mt-6 p-4 rounded-lg ${
                 status === 'approved' 
-                  ? 'bg-green-50 border border-green-100' 
-                  : 'bg-red-50 border border-red-100'
+                  ? 'bg-green-900 bg-opacity-20 border border-green-800' 
+                  : 'bg-red-900 bg-opacity-20 border border-red-800'
               }`}>
                 <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-full ${
-                    status === 'approved' 
-                      ? 'bg-green-100' 
-                      : 'bg-red-100'
-                  }`}>
+                  <div className="p-2 rounded-full bg-opacity-20 bg-gray-700">
                     {status === 'approved' ? (
-                      <Check className="w-5 h-5 text-green-500" />
+                      <CheckCircle className="w-5 h-5 text-green-500" />
                     ) : (
                       <XCircle className="w-5 h-5 text-red-500" />
                     )}
                   </div>
                   <div>
-                    <h4 className="text-sm font-medium text-gray-900">
+                    <h4 className="text-sm font-medium">
                       {status === 'approved' 
                         ? 'Approved Successfully' 
                         : 'Request Rejected'}
                     </h4>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-400">
                       {status === 'approved'
                         ? 'This request has been approved and processed.'
                         : 'This request has been rejected and archived.'}
                     </p>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            {status === 'pending' && (
+              <div className="mt-6 space-y-4">
+                <h3 className="text-sm font-medium text-gray-300">Request Action</h3>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => handleAction('approve')}
+                    className="flex-1 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
+                  >
+                    <Check className="w-4 h-4" />
+                    Approve
+                  </button>
+                  <button
+                    onClick={() => handleAction('reject')}
+                    className="flex-1 px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all flex items-center justify-center gap-2"
+                  >
+                    <XCircle className="w-4 h-4" />
+                    Reject
+                  </button>
                 </div>
               </div>
             )}
