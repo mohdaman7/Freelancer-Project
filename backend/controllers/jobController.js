@@ -1,6 +1,7 @@
 import Job from "../models/jobModel.js";
 import Proposal from "../models/proposalModel.js";
 import Notification from "../models/notificationModel.js";
+import { createRazorpayOrder } from "../services/razorpayService.js"
 
 
 export const createJob = async (req, res) => {
@@ -166,10 +167,33 @@ export const handleProposalDecision = (io) => async (req, res) => {
         message: "Proposal not found",
       });
     }
-
+    
     // Update proposal status
     proposal.status = status;
     await proposal.save();
+
+    if (status === "accepted") {
+      // Validate proposed budget
+      if (isNaN(proposal.proposedBudget)) {
+        throw new Error("Invalid proposed budget amount");
+      }
+
+      // Create Razorpay order using service
+      const amount = Number(proposal.proposedBudget);
+      const receipt = `proposal_${proposalId}`;
+      const notes = {
+        proposalId: proposalId.toString(),
+        jobId: proposal.jobId._id.toString(),
+        clientId: proposal.jobId.clientId.toString(),
+        developerId: proposal.developerId.toString()
+      };
+
+      const razorpayOrder = await createRazorpayOrder(amount, receipt, notes);
+
+      // Update proposal with Razorpay order ID
+      proposal.razorpayOrderId = razorpayOrder.id;
+      await proposal.save();
+    }
 
     // Create a notification for the developer
     const notification = new Notification({
@@ -191,7 +215,10 @@ export const handleProposalDecision = (io) => async (req, res) => {
     res.status(200).json({
       status: "success",
       message: `Proposal ${status}`,
-      data: proposal,
+      data: {
+        proposal,
+        ...(status === "accepted" && { razorpayOrder })
+      },
     });
   } catch (error) {
     res.status(500).json({

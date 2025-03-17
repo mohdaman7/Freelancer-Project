@@ -10,11 +10,11 @@ const razorpay = new Razorpay({
 export const createRazorpayOrder = async (amount, receipt, notes = {}) => {
   try {
     const order = await razorpay.orders.create({
-      amount: amount * 100, // Convert to paise
+      amount: amount * 100, 
       currency: "INR",
       receipt: receipt,
-      payment_capture: 1, // Auto-capture payment
-      notes: notes // Add metadata for traceability
+      payment_capture: 1, 
+      notes: notes 
     });
     return order;
   } catch (error) {
@@ -30,8 +30,8 @@ export const verifyPaymentSignature = (orderId, paymentId, signature) => {
       .update(orderId + "|" + paymentId)
       .digest('hex');
 
-    console.log("[Verify Signature] Generated Signature:", generatedSignature); // Debug log
-    console.log("[Verify Signature] Received Signature:", signature); // Debug log
+    console.log("[Verify Signature] Generated Signature:", generatedSignature);
+    console.log("[Verify Signature] Received Signature:", signature); 
 
     return generatedSignature === signature;
   } catch (error) {
