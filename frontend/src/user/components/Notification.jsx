@@ -102,9 +102,7 @@ const NotificationPage = () => {
   };
 
   const handleNotificationClick = (id, type, proposalId) => {
-    // navigate(`/chat/${proposalId}`);
-    // console.log(type,'typeeeeeeeeeeeeeeeeee')
-    if (type === 'proposalApproved' && proposalId) {
+    if ((type === 'proposalApproved' || type === 'chat') && proposalId) {
       navigate(`/chat/${proposalId}`);
     } else {
       navigate(`/notifications/${id}`);

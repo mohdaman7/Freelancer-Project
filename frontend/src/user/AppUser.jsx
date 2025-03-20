@@ -16,27 +16,35 @@ import LoginSelection from './components/Login';
 import Notification from './components/Notification';
 import NotificationDetail from './components/NotificationDetail';
 import ChatPage from './pages/ChatPage';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const AppUser = () => {
   return (
     <Routes>
-        <Route path='/' element={<Homepage/>}/>
-        <Route path='/get-started' element={<GetStartedPage/>}/>
-        <Route path='/client-register' element={<ClientRegister/>} />
-        <Route path='/client-login' element={<ClientLogin/>}/>
-        <Route path='/freelancer-register' element={<DeveloperRegister/>}/>
-        <Route path='/developers' element={<Developers/>}/>
-        <Route path='/freelancer-login' element={<DeveloperLogin/>}/>
-        <Route path='/post-job' element={<PostJob/>}/>
-        <Route path='/find-work' element={<FindWorkPage/>}/>
-        <Route path='/find-work/:id' element={<JobDetailsPage/>}/>
-        <Route path='/client-dashboard' element={<ClientDashboard/>}/>
-        <Route path='/freelancer-earnings' element={<DeveloperEarnings/>}/>
-        <Route path='/freelancer-profile/:developerId' element={<DeveloperProfile/>}/>
-        <Route path='/login' element={<LoginSelection/>}/>
-        <Route path='/notification' element={<Notification/>}/>
-        <Route path='/notifications/:id' element={<NotificationDetail/>}/>
-        <Route path='/chat/:proposalId' element={<ChatPage/>}/>
+      <Route path='/' element={<Homepage/>}/>
+      <Route path='/get-started' element={<GetStartedPage/>}/>
+      <Route path='/client-register' element={<ClientRegister/>} />
+      <Route path='/client-login' element={<ClientLogin/>}/>
+      <Route path='/freelancer-register' element={<DeveloperRegister/>}/>
+      <Route path='/developers' element={<Developers/>}/>
+      <Route path='/freelancer-login' element={<DeveloperLogin/>}/>
+      <Route path='/post-job' element={<PostJob/>}/>
+      <Route path='/find-work' element={<FindWorkPage/>}/>
+      <Route path='/find-work/:id' element={<JobDetailsPage/>}/>
+      <Route path='/client-dashboard' element={<ClientDashboard/>}/>
+      <Route path='/freelancer-earnings' element={<DeveloperEarnings/>}/>
+      <Route path='/freelancer-profile/:developerId' element={<DeveloperProfile/>}/>
+      <Route path='/login' element={<LoginSelection/>}/>
+      <Route path='/notification' element={<Notification/>}/>
+      <Route path='/notifications/:id' element={<NotificationDetail/>}/>
+      <Route 
+        path='/chat/:proposalId' 
+        element={
+          <ErrorBoundary>
+            <ChatPage/>
+          </ErrorBoundary>
+        }
+      />
     </Routes>
   )
 }

@@ -3,7 +3,6 @@ import { authenticateUser } from '../middlewares/userMiddleware.js';
 import {
   getChat,
   sendMessage,
-  getChatHistory,
   markMessagesAsRead
 } from '../controllers/chatController.js';
 
@@ -11,15 +10,10 @@ const router = express.Router();
 
 
 router.route('/:proposalId')
-  .get(authenticateUser(['client', 'developer', 'admin']), getChat)
-  .post(authenticateUser(['client', 'developer', 'admin']), sendMessage);
+  .get(authenticateUser(['client', 'developer']), getChat)  
+  .post(authenticateUser(['client', 'developer']), sendMessage); 
 
 
-router.route('/history/:proposalId')
-  .get(authenticateUser(['client', 'developer', 'admin']), getChatHistory);
-
-
-router.route('/mark-read/:proposalId')
-  .post(authenticateUser(['client', 'developer', 'admin']), markMessagesAsRead);
+router.post('/:proposalId/mark-read', authenticateUser(['client', 'developer']), markMessagesAsRead);
 
 export default router;

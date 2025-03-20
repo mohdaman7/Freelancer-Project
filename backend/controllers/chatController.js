@@ -1,105 +1,141 @@
+import mongoose from "mongoose";
 import Chat from '../models/chatModel.js';
 import Proposal from '../models/proposalModel.js';
+import Notification from '../models/notificationModel.js';
 
-export const getChat = async (req, res) => {
+// Initialize a chat for a proposal
+export const initializeChat = async (proposalId) => {
   try {
-    const proposal = await Proposal.findById(req.params.proposalId)
+    const proposal = await Proposal.findById(proposalId)
       .populate('developerId')
       .populate('jobId');
 
     if (!proposal || proposal.status !== 'accepted') {
-      return res.status(400).json({ error: 'Proposal not accepted' });
+      throw new Error('Proposal not accepted');
     }
 
-    let chat = await Chat.findOne({ proposalId: req.params.proposalId });
+    let chat = await Chat.findOne({ proposalId });
 
     if (!chat) {
       chat = new Chat({
-        proposalId: req.params.proposalId,
+        proposalId,
         participants: {
           client: proposal.jobId.clientId,
-          developer: proposal.developerId
+          developer: proposal.developerId._id
         },
         messages: []
       });
       await chat.save();
+
+      // Create notifications for both parties
+      await Promise.all([
+        Notification.create({
+          clientId: proposal.jobId.clientId,
+          message: `Chat room created for project: ${proposal.jobId.title}`,
+          type: 'chat',
+          proposalId: proposal._id
+        }),
+        Notification.create({
+          developerId: proposal.developerId._id,
+          message: `Chat room created for project: ${proposal.jobId.title}`,
+          type: 'chat',
+          proposalId: proposal._id
+        })
+      ]);
     }
 
-    res.status(200).json(chat);
+    return chat;
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    throw new Error(error.message);
   }
 };
 
+// Get chat by proposalId
+export const getChat = async (req, res) => {
+  try {
+    const chat = await initializeChat(req.params.proposalId);
+    const populatedChat = await Chat.populate(chat, [
+      { path: 'participants.client', select: 'name email profilePhoto' },
+      { path: 'participants.developer', select: 'name email profilePhoto' },
+      { path: 'messages.senderId', select: 'name profilePhoto' }
+    ]);
+
+    res.status(200).json(populatedChat);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// Send a message in the chat
 export const sendMessage = async (req, res) => {
   try {
     const { content } = req.body;
-    const chat = await Chat.findOneAndUpdate(
-      { proposalId: req.params.proposalId },
-      {
-        $push: {
-          messages: {
-            senderId: req.user.id,
-            senderRole: req.user.role === 'client' ? 'Client' : 'Developer',
-            content
-          }
-        }
-      },
-      { new: true }
-    );
+    const { proposalId } = req.params;
+    const { id: senderId, role: senderRole } = req.user;
 
-    res.status(200).json(chat);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+    // Validate input
+    if (!mongoose.Types.ObjectId.isValid(senderId)) {
+      return res.status(400).json({ error: 'Invalid senderId' });
+    }
+    if (!['client', 'developer'].includes(senderRole.toLowerCase())) {
+      return res.status(400).json({ error: 'Invalid senderRole' });
+    }
+    if (!content || typeof content !== 'string' || content.trim() === '') {
+      return res.status(400).json({ error: 'Content is required' });
+    }
 
-export const getChatHistory = async (req, res) => {
-  try {
-    const chat = await Chat.findOne({ proposalId: req.params.proposalId })
-      .populate('participants.client')
-      .populate('participants.developer');
+    // Find the chat by proposalId
+    const chat = await Chat.findOne({ proposalId });
 
     if (!chat) {
       return res.status(404).json({ error: 'Chat not found' });
     }
 
-    res.status(200).json(chat);
+    // Format senderRole to match enum values (Client/Developer)
+    const formattedRole = senderRole.charAt(0).toUpperCase() + senderRole.slice(1).toLowerCase();
+
+    // Add the new message
+    const newMessage = {
+      senderId,
+      senderRole: formattedRole, // Use formatted role
+      content,
+      timestamp: new Date(),
+      read: false
+    };
+
+    chat.messages.push(newMessage);
+
+    // Save the updated chat
+    await chat.save();
+
+    // Return the new message
+    res.status(201).json(chat.messages[chat.messages.length - 1]);
+  } catch (error) {
+    console.error('Error sending message:', error);
+    res.status(500).json({ error: 'Failed to send message' });
+  }
+};
+
+// Mark messages as read
+export const markMessagesAsRead = async (req, res) => {
+  try {
+    const chat = await Chat.findOne({ proposalId: req.params.proposalId });
+    const userId = req.user.id;
+
+    const unreadMessages = chat.messages.filter(
+      message => !message.read && message.senderId.toString() !== userId
+    );
+
+    if (unreadMessages.length > 0) {
+      await Chat.updateOne(
+        { proposalId: req.params.proposalId },
+        { $set: { 'messages.$[elem].read': true } },
+        { arrayFilters: [{ 'elem.read': false }] }
+      );
+    }
+
+    res.status(200).json({ status: 'success', updatedCount: unreadMessages.length });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
-
-export const markMessagesAsRead = async (req, res) => {
-    try {
-      const chat = await Chat.findOneAndUpdate(
-        { 
-          proposalId: req.params.proposalId,
-          "messages.senderId": { $ne: req.user.id }
-        },
-        {
-          $set: {
-            "messages.$[elem].read": true
-          }
-        },
-        {
-          arrayFilters: [{ "elem.read": false }],
-          new: true
-        }
-      );
-  
-      if (!chat) {
-        return res.status(404).json({ error: 'Chat not found' });
-      }
-  
-      res.status(200).json({
-        status: 'success',
-        message: 'Messages marked as read',
-        updatedCount: chat.messages.filter(m => m.read).length
-      });
-    } catch (error) {
-      res.status(500).json({ 
-        error: error.message || 'Failed to mark messages as read' 
-      });
-    }
-  };
