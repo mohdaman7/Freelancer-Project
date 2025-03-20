@@ -3,7 +3,6 @@ import Chat from '../models/chatModel.js';
 import Proposal from '../models/proposalModel.js';
 import Notification from '../models/notificationModel.js';
 
-// Initialize a chat for a proposal
 export const initializeChat = async (proposalId) => {
   try {
     const proposal = await Proposal.findById(proposalId)
@@ -27,7 +26,6 @@ export const initializeChat = async (proposalId) => {
       });
       await chat.save();
 
-      // Create notifications for both parties
       await Promise.all([
         Notification.create({
           clientId: proposal.jobId.clientId,
@@ -50,7 +48,6 @@ export const initializeChat = async (proposalId) => {
   }
 };
 
-// Get chat by proposalId
 export const getChat = async (req, res) => {
   try {
     const chat = await initializeChat(req.params.proposalId);
@@ -66,14 +63,13 @@ export const getChat = async (req, res) => {
   }
 };
 
-// Send a message in the chat
 export const sendMessage = async (req, res) => {
   try {
     const { content } = req.body;
     const { proposalId } = req.params;
     const { id: senderId, role: senderRole } = req.user;
 
-    // Validate input
+  
     if (!mongoose.Types.ObjectId.isValid(senderId)) {
       return res.status(400).json({ error: 'Invalid senderId' });
     }
@@ -84,20 +80,19 @@ export const sendMessage = async (req, res) => {
       return res.status(400).json({ error: 'Content is required' });
     }
 
-    // Find the chat by proposalId
     const chat = await Chat.findOne({ proposalId });
 
     if (!chat) {
       return res.status(404).json({ error: 'Chat not found' });
     }
 
-    // Format senderRole to match enum values (Client/Developer)
+
     const formattedRole = senderRole.charAt(0).toUpperCase() + senderRole.slice(1).toLowerCase();
 
-    // Add the new message
+   
     const newMessage = {
       senderId,
-      senderRole: formattedRole, // Use formatted role
+      senderRole: formattedRole, 
       content,
       timestamp: new Date(),
       read: false
@@ -105,10 +100,10 @@ export const sendMessage = async (req, res) => {
 
     chat.messages.push(newMessage);
 
-    // Save the updated chat
+    
     await chat.save();
 
-    // Return the new message
+   
     res.status(201).json(chat.messages[chat.messages.length - 1]);
   } catch (error) {
     console.error('Error sending message:', error);
@@ -116,7 +111,7 @@ export const sendMessage = async (req, res) => {
   }
 };
 
-// Mark messages as read
+
 export const markMessagesAsRead = async (req, res) => {
   try {
     const chat = await Chat.findOne({ proposalId: req.params.proposalId });
